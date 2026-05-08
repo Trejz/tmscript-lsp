@@ -1,0 +1,6 @@
+{
+    "types":[
+        "string", "int", "byte", "float", "double", "bool",
+        "string[]", "int[]", "byte[]", "float[]", "double[]", "bool[]"
+    ]
+}

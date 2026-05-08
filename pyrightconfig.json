@@ -1,0 +1,15 @@
+{
+  "venvPath": "server",
+  "venv": ".venv",
+  "include": [
+    "server/src"
+  ],
+  "executionEnvironments": [
+    {
+      "root": "server/src",
+      "extraPaths": [
+        "server"
+      ]
+    }
+  ]
+}
