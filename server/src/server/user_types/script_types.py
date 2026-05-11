@@ -7,7 +7,7 @@ class ScriptTypeHandler:
         self._script_types: list[types.CompletionItem]
         self._data: list[str]
         # Resolve to src/assets
-        self._assets_dir = Path(__file__).parent.parent.parent / "assets"
+        self._assets_dir = Path(__file__).parent.parent / "assets"
 
         self._read_json()
 

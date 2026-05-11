@@ -8,7 +8,7 @@ class ScriptFunctionHandler:
         self._script_functions: list[types.CompletionItem]
         self._data: dict[str,dict]
         # Resolve to src/assets
-        self._assets_dir = Path(__file__).parent.parent.parent / "assets"
+        self._assets_dir = Path(__file__).parent.parent / "assets"
 
         self._read_json()
 
@@ -54,4 +54,38 @@ class ScriptFunctionHandler:
 
         return fitting_functions
 
-            
+
+    def get_valid_return_function(self, func_name: str, func_type: str) -> tuple[bool,str]:
+
+        valid_return = False
+        return_type = ""
+
+        for func_key, func_data in self._data.items():
+            if func_name == func_key:
+                func_return_val = func_data.get("return", [])
+
+                if func_type == any(func_return_val):
+                    valid_return = True
+                    return_type = func_type
+
+                    return valid_return, return_type
+
+                else:
+                    if len(func_return_val) >= 2:
+                        return_type = " | ".join(func_return_val)
+                        return valid_return, return_type
+                    
+                    valid_return = False
+                    return_type = func_return_val[0]
+
+                    return valid_return, return_type
+
+        return valid_return, return_type
+
+
+
+        
+
+
+
+

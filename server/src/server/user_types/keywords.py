@@ -7,7 +7,7 @@ class KeywordHandler:
         self._keywords: list[types.CompletionItem]
         self._data: dict[str, list]
         # Resolve to src/assets
-        self._assets_dir = Path(__file__).parent.parent.parent / "assets"
+        self._assets_dir = Path(__file__).parent.parent / "assets"
 
         self._get_json()
 
