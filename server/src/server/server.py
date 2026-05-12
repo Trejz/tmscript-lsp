@@ -14,15 +14,14 @@ server = LanguageServer("tmscript-lsp", "v0.0.1")
 keywordhandler = KeywordHandler()
 scriptfunctionhandler = ScriptFunctionHandler()
 scripttypehandler = ScriptTypeHandler()
-userdefinedvariables = UserDefinedVarialbes()
+userdefinedvariables = UserDefinedVarialbes(scripttypehandler)
 
 completion_rules = CompletionRules(scripttypehandler, scriptfunctionhandler, userdefinedvariables)
-diagnostics_rules = DiagnositcRules(scriptfunctionhandler)
+diagnostics_rules = DiagnositcRules(scriptfunctionhandler, userdefinedvariables)
 
 # On Completion Request
 @server.feature(types.TEXT_DOCUMENT_COMPLETION)
 def completions(ls: LanguageServer, params: types.CompletionParams):
-
     document = ls.workspace.get_text_document(params.text_document.uri)
 
     line: str = document.lines[params.position.line]

@@ -7,7 +7,7 @@ class ScriptFunctionHandler:
     def __init__(self) -> None:
         self._script_functions: list[types.CompletionItem]
         self._data: dict[str,dict]
-        # Resolve to src/assets
+        # Resolve to src/server/assets
         self._assets_dir = Path(__file__).parent.parent / "assets"
 
         self._read_json()
@@ -64,7 +64,11 @@ class ScriptFunctionHandler:
             if func_name == func_key:
                 func_return_val = func_data.get("return", [])
 
-                if func_type == any(func_return_val):
+                if (
+                    func_type in func_return_val
+                    or "any" in func_return_val
+                    or "any[]" in func_return_val):
+
                     valid_return = True
                     return_type = func_type
 

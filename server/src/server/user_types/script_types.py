@@ -6,7 +6,7 @@ class ScriptTypeHandler:
     def __init__(self) -> None:
         self._script_types: list[types.CompletionItem]
         self._data: list[str]
-        # Resolve to src/assets
+        # Resolve to src/server/assets
         self._assets_dir = Path(__file__).parent.parent / "assets"
 
         self._read_json()
