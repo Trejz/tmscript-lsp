@@ -64,8 +64,7 @@ class ScriptFunctionHandler:
             if func_name == func_key:
                 func_return_val = func_data.get("return", [])
 
-                if (
-                    func_type in func_return_val
+                if (func_type in func_return_val
                     or "any" in func_return_val
                     or "any[]" in func_return_val):
 

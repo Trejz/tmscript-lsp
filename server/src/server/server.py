@@ -17,7 +17,7 @@ scripttypehandler = ScriptTypeHandler()
 userdefinedvariables = UserDefinedVarialbes(scripttypehandler)
 
 completion_rules = CompletionRules(scripttypehandler, scriptfunctionhandler, userdefinedvariables)
-diagnostics_rules = DiagnositcRules(scriptfunctionhandler, userdefinedvariables)
+diagnostics_rules = DiagnositcRules(scriptfunctionhandler, userdefinedvariables, scripttypehandler)
 
 # On Completion Request
 @server.feature(types.TEXT_DOCUMENT_COMPLETION)

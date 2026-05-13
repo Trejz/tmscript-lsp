@@ -25,7 +25,6 @@ class ScriptTypeHandler:
                             ) for type_name in self._data
                         ]
 
-
         return self._script_types
 
 
