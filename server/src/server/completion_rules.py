@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.server.user_types.script_types import ScriptTypeHandler
-    from server.user_types.script_functions import ScriptFunctionHandler
+    from src.server.user_types.script_functions import ScriptFunctionHandler
     from src.server.user_types.user_variables import UserDefinedVarialbes
 
 class CompletionRules:

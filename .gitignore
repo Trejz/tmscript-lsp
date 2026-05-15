@@ -5,3 +5,4 @@ __pycache__
 *.tms
 functions.json
 *.log
+vs_code_client/server/

@@ -1,0 +1,81 @@
+{
+  "name": "tmscript-lsp-client",
+  "displayName": "TMScript LSP Client",
+  "description": "VS Code client for the TMScript language server",
+  "version": "0.0.1",
+  "publisher": "local",
+  "private": false,
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:tmscript"
+  ],
+  "main": "./out/extension.js",
+  "files": [
+    "out/**",
+    "server/**",
+    "package.json",
+    "README.md"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "tmscript",
+        "aliases": [
+          "TMScript",
+          "tmscript"
+        ],
+        "extensions": [
+          ".tmss"
+        ]
+      }
+    ],
+    "configuration": {
+      "title": "TMScript LSP",
+      "properties": {
+        "tmscriptLsp.pythonPath": {
+          "type": "string",
+          "default": "",
+          "description": "Python executable used to launch the TMScript server. Leave empty to auto-detect a local venv first, then fallback to 'python'."
+        },
+        "tmscriptLsp.serverRoot": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the server root folder that contains src/. Empty auto-detects workspace/server for development, then bundled extension server for published builds."
+        },
+        "tmscriptLsp.serverModule": {
+          "type": "string",
+          "default": "src.main",
+          "description": "Python module to execute for the server (for example: src.main)."
+        },
+        "tmscriptLsp.trace.server": {
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Traces communication between VS Code and the language server."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "sync:server": "node ./scripts/sync-server.mjs",
+    "build": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "npm run sync:server && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.4.5",
+    "vscode": "^1.1.37",
+    "vscode-languageclient": "^9.0.1"
+  }
+}

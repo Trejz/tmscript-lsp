@@ -1,3 +1,4 @@
+from functools import wraps
 import re
 from lsprotocol import types
 from typing import TYPE_CHECKING
@@ -20,10 +21,10 @@ class DiagnositcRules:
         self._userdefinedvariables: "UserDefinedVarialbes" = userdefinedvariables
         self._scripttypehandler: "ScriptTypeHandler" = scripttypehandler
         
-        self._diagnostics: list[types.Diagnostic]
+        self._diagnostics: list[types.Diagnostic] = []
         self._user_vars: dict[str,dict[str,str]] = {}
-        self._diag_pos_start: types.Position
-        self._diag_pos_end: types.Position
+        self._diag_pos_start: types.Position = types.Position(line=0,character=0)
+        self._diag_pos_end: types.Position = types.Position(line=0,character=0)
 
 
     def var_value_assignmenet(self, document) -> list[types.Diagnostic]:
@@ -79,14 +80,12 @@ class DiagnositcRules:
             # Match to var_type
             match var_type:
                 case VarTypeEnum._string:
-                    
                     # Valid var definition
                     if var_value is None:
                         continue
 
                     value = var_value.strip()
-                    
-                    self._check_string_variable_assignment(value=value)
+                    self._check_string_variable_assignment(value=value, var_type=var_type)
 
                 case VarTypeEnum._int | VarTypeEnum._byte:
                     # Valid var definition
@@ -94,7 +93,6 @@ class DiagnositcRules:
                         continue
 
                     value = var_value.strip()
-                    
                     self._check_int_byte_variable_assignment(value=value,var_type=var_type)
 
                 case VarTypeEnum._float | VarTypeEnum._double:
@@ -103,19 +101,18 @@ class DiagnositcRules:
                         continue
 
                     value = var_value.strip()
-                    
                     self._check_float_double_variable_assignment(value=value, var_type=var_type)
 
         return self._diagnostics
 
 
-    def _function_return_type(self, value:str) -> bool:
+    def _function_return_type(self, value: str, var_type: str) -> bool:
         """Return True if continue"""
         regex_func = re.compile(r"^(\w+)\s*\((.*)\)$")
         func_match = regex_func.match(value)
 
         if func_match:
-            valid, return_types = self._scriptfunctionhandler.get_valid_return_function(func_match.group(1),VarTypeEnum._string)
+            valid, return_types = self._scriptfunctionhandler.get_valid_return_function(func_match.group(1),var_type)
 
             if valid:
                 return True
@@ -133,7 +130,7 @@ class DiagnositcRules:
         return False
 
 
-    def _check_string_variable_assignment(self, value: str) -> None:
+    def _check_string_variable_assignment(self, value: str, var_type: str) -> None:
         # No Value after =
         if value == "":
             message = "Expected string value"
@@ -148,7 +145,7 @@ class DiagnositcRules:
 
         # Wrong value after =
         elif not re.match(r'^".*"$', value):
-            if self._function_return_type(value):
+            if self._function_return_type(value, var_type):
                 return
 
             # Check If correct String Format
@@ -184,7 +181,7 @@ class DiagnositcRules:
                         )
                         continue
 
-                    if self._function_return_type(val):
+                    if self._function_return_type(val, var_type):
                         continue
 
                     message = f"String {val} value must be in quotes"
@@ -204,7 +201,7 @@ class DiagnositcRules:
         if re.match(r"^-?\d+$", value):
             try:
                 value_int: int = int(value)
-            except Exception:
+            except ValueError:
                 message = f"Value is not an {var_type}"
 
                 self._diagnostics.append(types.Diagnostic(
@@ -236,12 +233,12 @@ class DiagnositcRules:
             if len(striped_values) >= 2:
                 for val in striped_values:
 
-                    if self._function_return_type(val):
+                    if self._function_return_type(val, var_type):
                         continue
 
                     try:
                         value_int: int = int(val)
-                    except Exception:
+                    except ValueError:
                         if val == "":
                             message = f"Expected {var_type} Value"
                         else:
@@ -271,14 +268,13 @@ class DiagnositcRules:
                     if isinstance(value_int, int):
                         continue
 
-
             else:        
-                if self._function_return_type(value):
+                if self._function_return_type(value, var_type):
                     return
 
                 try:
                     value_int: int = int(value)
-                except Exception:
+                except ValueError:
                     if value == "":
                         message = f"Expected {var_type} Value"
                     else:
@@ -302,7 +298,7 @@ class DiagnositcRules:
         if re.match(r"^-?(\d+\.\d+|\.\d+)$", value):
             try:
                 value_float: float = float(value)
-            except Exception:
+            except ValueError:
                 message = f"Value is not a {var_type}"
 
                 self._diagnostics.append(types.Diagnostic(
@@ -321,13 +317,13 @@ class DiagnositcRules:
                                          if val.strip() and val.strip() not in "+-/*"]
             if len(striped_values) >= 2:
                 for val in striped_values:
-                    if self._function_return_type(val):
+                    if self._function_return_type(val, var_type):
                         continue
 
                     try:
                         value_float: float = float(val)
                         continue
-                    except Exception:
+                    except ValueError:
                         if val == "":
                             message = f"Expected {var_type} value"
                         else:
@@ -341,15 +337,14 @@ class DiagnositcRules:
                             )
                         )
                         continue
-                    
 
             else:        
-                if self._function_return_type(value):
+                if self._function_return_type(value, var_type):
                     return
 
                 try:
                     value_float: float = float(value)
-                except Exception:
+                except ValueError:
                     if value == "":
                         message = f"Expected {var_type} value"
                     else:

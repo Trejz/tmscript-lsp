@@ -5,7 +5,7 @@ from lsprotocol import types
 
 class ScriptFunctionHandler:
     def __init__(self) -> None:
-        self._script_functions: list[types.CompletionItem]
+        self._script_functions: list[types.CompletionItem] = []
         self._data: dict[str,dict]
         # Resolve to src/server/assets
         self._assets_dir = Path(__file__).parent.parent / "assets"

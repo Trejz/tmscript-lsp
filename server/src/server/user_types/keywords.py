@@ -4,7 +4,7 @@ from lsprotocol import types
 
 class KeywordHandler:
     def __init__(self) -> None:
-        self._keywords: list[types.CompletionItem]
+        self._keywords: list[types.CompletionItem] = []
         self._data: dict[str, list]
         # Resolve to src/server/assets
         self._assets_dir = Path(__file__).parent.parent / "assets"

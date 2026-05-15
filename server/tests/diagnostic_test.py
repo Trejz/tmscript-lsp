@@ -16,7 +16,7 @@ def debug_diagnostics(document_text: str) -> None:
 	user_vars = UserDefinedVarialbes(handler)
 	document = TestDocument(document_text)
 	
-	diagnostics_rules = DiagnositcRules(script_func_handler, user_vars)
+	diagnostics_rules = DiagnositcRules(script_func_handler, user_vars, handler)
 	
 	print(f"\n=== Diagnostics Debug ===")
 	print(f"Document:\n{document_text}\n")
@@ -34,7 +34,7 @@ def debug_diagnostics(document_text: str) -> None:
 
 # ============ EDIT THIS SECTION TO DEBUG ============
 document_text = """
-string var1 = String_ToUpper() + "test"
+int test = File_Length()
 """.strip()
 
 debug_diagnostics(document_text)
