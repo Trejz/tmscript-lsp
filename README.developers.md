@@ -46,7 +46,7 @@ npm run build
 
 1. Open the repository in VS Code.
 2. Start the launch config named Run TMScript Client from [vs_code_client/.vscode/launch.json](vs_code_client/.vscode/launch.json).
-3. In the Extension Development Host, open a .tmss file.
+3. In the Extension Development Host, open a .tms file.
 4. Verify autocomplete and diagnostics are active.
 
 ## 4) How Single-Extension Packaging Works

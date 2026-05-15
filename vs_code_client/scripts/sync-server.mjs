@@ -5,8 +5,11 @@ import process from "node:process";
 const extensionRoot = process.cwd();
 const sourceServerRoot = path.resolve(extensionRoot, "..", "server");
 const sourceServerSrc = path.join(sourceServerRoot, "src");
+const sourceServerDist = path.join(sourceServerRoot, "dist");
 const destinationServerRoot = path.join(extensionRoot, "server");
 const destinationServerSrc = path.join(destinationServerRoot, "src");
+const destinationServerDist = path.join(destinationServerRoot, "dist");
+const destinationServerBinWin = path.join(destinationServerRoot, "bin", "win32");
 
 if (!fs.existsSync(sourceServerSrc)) {
   throw new Error(`Server source not found at ${sourceServerSrc}`);
@@ -15,6 +18,16 @@ if (!fs.existsSync(sourceServerSrc)) {
 fs.rmSync(destinationServerRoot, { recursive: true, force: true });
 fs.mkdirSync(destinationServerRoot, { recursive: true });
 fs.cpSync(sourceServerSrc, destinationServerSrc, { recursive: true });
+
+if (fs.existsSync(sourceServerDist)) {
+  fs.cpSync(sourceServerDist, destinationServerDist, { recursive: true });
+
+  const winExe = path.join(sourceServerDist, "main.exe");
+  if (fs.existsSync(winExe)) {
+    fs.mkdirSync(destinationServerBinWin, { recursive: true });
+    fs.copyFileSync(winExe, path.join(destinationServerBinWin, "tmscript-lsp-server.exe"));
+  }
+}
 
 const requirementsPath = path.join(destinationServerRoot, "requirements.txt");
 const requirements = [

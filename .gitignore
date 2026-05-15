@@ -6,3 +6,6 @@ __pycache__
 functions.json
 *.log
 vs_code_client/server/
+server/build
+server/dist
+server/*.spec

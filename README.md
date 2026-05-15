@@ -1,18 +1,18 @@
 # TMScript for VS Code
 
-TMScript for VS Code adds language support for TMSS files.
+TMScript for VS Code adds language support for TMS files.
 
 ## What You Get
 
-- Language server powered editing for .tmss files
+- Language server powered editing for .tms files
 - Autocomplete for keywords, script functions, types, and user-defined variables
 - Diagnostics while you type
 
 ## Quick Start
 
 1. Install TMScript for VS Code from the Extensions view.
-2. Open a folder that contains TMSS files.
-3. Open any file ending in .tmss.
+2. Open a folder that contains TMS files.
+3. Open any file ending in .tms.
 4. Start typing to see completions and diagnostics.
 
 ## Requirements

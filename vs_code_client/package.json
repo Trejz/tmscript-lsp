@@ -30,7 +30,7 @@
           "tmscript"
         ],
         "extensions": [
-          ".tmss"
+          ".tms"
         ]
       }
     ],
@@ -41,6 +41,11 @@
           "type": "string",
           "default": "",
           "description": "Python executable used to launch the TMScript server. Leave empty to auto-detect a local venv first, then fallback to 'python'."
+        },
+        "tmscriptLsp.serverExecutablePath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to a prebuilt server executable. Supports absolute paths or workspace-relative paths. If empty, the extension auto-detects a bundled executable first."
         },
         "tmscriptLsp.serverRoot": {
           "type": "string",

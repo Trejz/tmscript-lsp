@@ -60,6 +60,57 @@ function resolveServerRoot(
   return bundledServer;
 }
 
+function resolveExecutablePath(
+  configuredExecutablePath: string,
+  serverRoot: string,
+  workspaceRoot: string | undefined,
+  extensionPath: string,
+): string | undefined {
+  const normalizedConfigured = configuredExecutablePath.trim();
+
+  if (normalizedConfigured.length > 0) {
+    if (path.isAbsolute(normalizedConfigured)) {
+      return fs.existsSync(normalizedConfigured) ? normalizedConfigured : undefined;
+    }
+
+    if (workspaceRoot) {
+      const workspaceCandidate = resolvePath(normalizedConfigured, workspaceRoot);
+      if (fs.existsSync(workspaceCandidate)) {
+        return workspaceCandidate;
+      }
+    }
+
+    const extensionCandidate = path.join(extensionPath, normalizedConfigured);
+    return fs.existsSync(extensionCandidate) ? extensionCandidate : undefined;
+  }
+
+  const platformCandidates = process.platform === "win32"
+    ? [
+      path.join(serverRoot, "bin", "win32", "tmscript-lsp-server.exe"),
+      path.join(serverRoot, "dist", "main.exe"),
+      path.join(serverRoot, "dist", "tmscript-lsp-server.exe"),
+    ]
+    : process.platform === "darwin"
+      ? [
+        path.join(serverRoot, "bin", "darwin", "tmscript-lsp-server"),
+        path.join(serverRoot, "dist", "main"),
+        path.join(serverRoot, "dist", "tmscript-lsp-server"),
+      ]
+      : [
+        path.join(serverRoot, "bin", "linux", "tmscript-lsp-server"),
+        path.join(serverRoot, "dist", "main"),
+        path.join(serverRoot, "dist", "tmscript-lsp-server"),
+      ];
+
+  for (const candidate of platformCandidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+
+  return undefined;
+}
+
 function detectPython(serverRoot: string, configuredPath: string): string {
   if (configuredPath.trim().length > 0) {
     return configuredPath;
@@ -103,29 +154,49 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   const configuredServerRoot = config.get<string>("serverRoot", "");
   const serverRoot = resolveServerRoot(configuredServerRoot, workspaceRoot, context.extensionPath);
 
+  const executablePath = resolveExecutablePath(
+    config.get<string>("serverExecutablePath", ""),
+    serverRoot,
+    workspaceRoot,
+    context.extensionPath,
+  );
+
   const pythonPath = detectPython(serverRoot, config.get<string>("pythonPath", ""));
   const serverModule = config.get<string>("serverModule", "src.main");
 
-  if (!fs.existsSync(path.join(serverRoot, "src", "main.py"))) {
+  let serverOptions: ServerOptions | undefined;
+
+  if (executablePath) {
+    serverOptions = {
+      command: executablePath,
+      args: [],
+      options: {
+        cwd: path.dirname(executablePath),
+        env: {
+          ...process.env,
+        },
+      },
+    };
+  } else if (fs.existsSync(path.join(serverRoot, "src", "main.py"))) {
+    serverOptions = {
+      command: pythonPath,
+      args: ["-m", serverModule],
+      options: {
+        cwd: serverRoot,
+        env: {
+          ...process.env,
+          PYTHONPATH: process.env.PYTHONPATH
+            ? `${serverRoot}${path.delimiter}${process.env.PYTHONPATH}`
+            : serverRoot,
+        },
+      },
+    };
+  } else {
     vscode.window.showErrorMessage(
-      `TMScript LSP server not found under '${serverRoot}'. Set tmscriptLsp.serverRoot to the folder containing src/main.py.`,
+      "TMScript LSP server executable was not found and Python server source is missing. Bundle server/bin for your platform or set tmscriptLsp.serverExecutablePath.",
     );
     return;
   }
-
-  const serverOptions: ServerOptions = {
-    command: pythonPath,
-    args: ["-m", serverModule],
-    options: {
-      cwd: serverRoot,
-      env: {
-        ...process.env,
-        PYTHONPATH: process.env.PYTHONPATH
-          ? `${serverRoot}${path.delimiter}${process.env.PYTHONPATH}`
-          : serverRoot,
-      },
-    },
-  };
 
   const clientOptions: LanguageClientOptions = {
     documentSelector: [
@@ -133,7 +204,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       { scheme: "untitled", language: "tmscript" },
     ],
     synchronize: {
-      fileEvents: vscode.workspace.createFileSystemWatcher("**/*.tmss"),
+      fileEvents: vscode.workspace.createFileSystemWatcher("**/*.tms"),
     },
     outputChannelName: "TMScript LSP",
   };
