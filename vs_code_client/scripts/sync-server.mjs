@@ -9,6 +9,7 @@ const sourceServerDist = path.join(sourceServerRoot, "dist");
 const destinationServerRoot = path.join(extensionRoot, "server");
 const destinationServerSrc = path.join(destinationServerRoot, "src");
 const destinationServerDist = path.join(destinationServerRoot, "dist");
+const destinationServerBin = path.join(destinationServerRoot, "bin");
 const destinationServerBinWin = path.join(destinationServerRoot, "bin", "win32");
 
 if (!fs.existsSync(sourceServerSrc)) {
@@ -24,7 +25,9 @@ if (fs.existsSync(sourceServerDist)) {
 
   const winExe = path.join(sourceServerDist, "main.exe");
   if (fs.existsSync(winExe)) {
+    fs.mkdirSync(destinationServerBin, { recursive: true });
     fs.mkdirSync(destinationServerBinWin, { recursive: true });
+    fs.copyFileSync(winExe, path.join(destinationServerBin, "main.exe"));
     fs.copyFileSync(winExe, path.join(destinationServerBinWin, "tmscript-lsp-server.exe"));
   }
 }

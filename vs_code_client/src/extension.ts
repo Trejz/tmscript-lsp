@@ -41,6 +41,10 @@ function resolveServerRoot(
   }
 
   const bundledServer = path.join(extensionPath, "server");
+  if (fs.existsSync(path.join(bundledServer, "bin"))) {
+    return bundledServer;
+  }
+
   if (fs.existsSync(path.join(bundledServer, "src", "main.py"))) {
     return bundledServer;
   }
@@ -58,6 +62,30 @@ function resolveServerRoot(
   }
 
   return bundledServer;
+}
+
+function findBinaryRecursive(rootDir: string, extensions: string[], maxDepth = 4): string[] {
+  if (!fs.existsSync(rootDir) || maxDepth < 0) {
+    return [];
+  }
+
+  const entries = fs.readdirSync(rootDir, { withFileTypes: true });
+  const files: string[] = [];
+
+  for (const entry of entries) {
+    const fullPath = path.join(rootDir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...findBinaryRecursive(fullPath, extensions, maxDepth - 1));
+      continue;
+    }
+
+    const lowerName = entry.name.toLowerCase();
+    if (extensions.some((ext) => lowerName.endsWith(ext))) {
+      files.push(fullPath);
+    }
+  }
+
+  return files;
 }
 
 function resolveExecutablePath(
@@ -87,6 +115,8 @@ function resolveExecutablePath(
   const platformCandidates = process.platform === "win32"
     ? [
       path.join(serverRoot, "bin", "win32", "tmscript-lsp-server.exe"),
+      path.join(serverRoot, "bin", "tmscript-lsp-server.exe"),
+      path.join(serverRoot, "bin", "main.exe"),
       path.join(serverRoot, "dist", "main.exe"),
       path.join(serverRoot, "dist", "tmscript-lsp-server.exe"),
     ]
@@ -106,6 +136,18 @@ function resolveExecutablePath(
     if (fs.existsSync(candidate)) {
       return candidate;
     }
+  }
+
+  const recursiveCandidates = process.platform === "win32"
+    ? findBinaryRecursive(path.join(serverRoot, "bin"), [".exe"])
+    : findBinaryRecursive(path.join(serverRoot, "bin"), [""])
+      .filter((file) => {
+        const fileName = path.basename(file).toLowerCase();
+        return fileName === "tmscript-lsp-server" || fileName === "main";
+      });
+
+  if (recursiveCandidates.length > 0) {
+    return recursiveCandidates[0];
   }
 
   return undefined;
@@ -149,10 +191,13 @@ function toTraceMode(value: string): Trace {
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
   const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+  const bootstrapLog = vscode.window.createOutputChannel("TMScript LSP Bootstrap");
+  context.subscriptions.push(bootstrapLog);
 
   const config = vscode.workspace.getConfiguration("tmscriptLsp");
   const configuredServerRoot = config.get<string>("serverRoot", "");
   const serverRoot = resolveServerRoot(configuredServerRoot, workspaceRoot, context.extensionPath);
+  bootstrapLog.appendLine(`Resolved serverRoot: ${serverRoot}`);
 
   const executablePath = resolveExecutablePath(
     config.get<string>("serverExecutablePath", ""),
@@ -160,6 +205,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     workspaceRoot,
     context.extensionPath,
   );
+  bootstrapLog.appendLine(`Resolved executablePath: ${executablePath ?? "<none>"}`);
 
   const pythonPath = detectPython(serverRoot, config.get<string>("pythonPath", ""));
   const serverModule = config.get<string>("serverModule", "src.main");
@@ -167,6 +213,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   let serverOptions: ServerOptions | undefined;
 
   if (executablePath) {
+    bootstrapLog.appendLine(`Launching executable server: ${executablePath}`);
     serverOptions = {
       command: executablePath,
       args: [],
@@ -178,6 +225,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       },
     };
   } else if (fs.existsSync(path.join(serverRoot, "src", "main.py"))) {
+    bootstrapLog.appendLine(`Launching Python server: ${pythonPath} -m ${serverModule}`);
     serverOptions = {
       command: pythonPath,
       args: ["-m", serverModule],
