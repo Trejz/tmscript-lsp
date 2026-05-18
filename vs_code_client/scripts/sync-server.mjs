@@ -11,6 +11,7 @@ const destinationServerSrc = path.join(destinationServerRoot, "src");
 const destinationServerDist = path.join(destinationServerRoot, "dist");
 const destinationServerBin = path.join(destinationServerRoot, "bin");
 const destinationServerBinWin = path.join(destinationServerRoot, "bin", "win32");
+const destinationServerExe = path.join(destinationServerRoot, "tmscript-lsp-server.exe");
 
 if (!fs.existsSync(sourceServerSrc)) {
   throw new Error(`Server source not found at ${sourceServerSrc}`);
@@ -27,6 +28,7 @@ if (fs.existsSync(sourceServerDist)) {
   if (fs.existsSync(winExe)) {
     fs.mkdirSync(destinationServerBin, { recursive: true });
     fs.mkdirSync(destinationServerBinWin, { recursive: true });
+    fs.copyFileSync(winExe, destinationServerExe);
     fs.copyFileSync(winExe, path.join(destinationServerBin, "main.exe"));
     fs.copyFileSync(winExe, path.join(destinationServerBinWin, "tmscript-lsp-server.exe"));
   }

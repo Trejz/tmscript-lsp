@@ -4,6 +4,7 @@
   "description": "VS Code client for the TMScript language server",
   "version": "0.0.1",
   "publisher": "local",
+  "license": "MIT",
   "private": false,
   "engines": {
     "vscode": "^1.85.0"
@@ -19,7 +20,8 @@
     "out/**",
     "server/**",
     "package.json",
-    "README.md"
+    "README.md",
+    "LICENSE.md"
   ],
   "contributes": {
     "languages": [
@@ -73,8 +75,7 @@
   "scripts": {
     "sync:server": "node ./scripts/sync-server.mjs",
     "build": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "vscode:prepublish": "npm run sync:server && npm run build"
+    "watch": "tsc -watch -p ./"
   },
   "devDependencies": {
     "@types/node": "^20.12.7",

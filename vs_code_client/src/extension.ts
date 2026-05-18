@@ -114,6 +114,7 @@ function resolveExecutablePath(
 
   const platformCandidates = process.platform === "win32"
     ? [
+      path.join(serverRoot, "tmscript-lsp-server.exe"),
       path.join(serverRoot, "bin", "win32", "tmscript-lsp-server.exe"),
       path.join(serverRoot, "bin", "tmscript-lsp-server.exe"),
       path.join(serverRoot, "bin", "main.exe"),

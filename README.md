@@ -38,4 +38,3 @@ You can configure these settings from VS Code Settings:
 ## Feedback
 
 For issues and feature requests, use the project issue tracker.
-For contributor setup and publishing steps, see [README.developers.md](README.developers.md).

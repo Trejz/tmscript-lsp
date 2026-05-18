@@ -9,3 +9,7 @@ vs_code_client/server/
 server/build
 server/dist
 server/*.spec
+*.exe
+*.vsix
+vs_code_client/release
+vs_code_client/*.md
