@@ -1,4 +1,3 @@
-from functools import wraps
 import re
 from lsprotocol import types
 from typing import TYPE_CHECKING
@@ -30,7 +29,7 @@ class DiagnositcRules:
     def var_value_assignmenet(self, document) -> list[types.Diagnostic]:
         self._diagnostics: list[types.Diagnostic] = []
 
-        regex_var_declaration = re.compile(r"^\s*(?:(\w+)\s+)?(\w+)\s*=\s*(.*)$")
+        regex_var_declaration = re.compile(r"^\s*(?:(\w+)\s+)?(\w+\s*)(?:=\s*(.*))?$")
 
         for line_num, line in enumerate(document.lines):
             line = line.lstrip("\ufeff").rstrip("\r\n")
@@ -40,30 +39,33 @@ class DiagnositcRules:
             if not regex_match:
                 continue
             
-            var_type = regex_match.group(1)
-            var_name = regex_match.group(2)
-            var_value = regex_match.group(3)
+            var_type: str | None = regex_match.group(1)
+            var_name: str | None = regex_match.group(2)
+            var_value: str | None = regex_match.group(3)
 
             self._user_vars = self._userdefinedvariables.collect_variables(document)
 
-            self._diag_pos_start = types.Position(line=line_num,character=line.find("="))
+            eq_pos = line.find("=") if "=" in line else len(line.rstrip()) - 1
+            self._diag_pos_start = types.Position(line=line_num,character=max(0, eq_pos))
             self._diag_pos_end = types.Position(line=line_num, character=len(line))
 
             # Check if type Keyword is correct
-            if var_type not in self._scripttypehandler.get_script_types():
-                
-                message: str = f"""Type Keyword "{var_type}" is not valid""" 
-                self._diagnostics.append(types.Diagnostic(
-                        range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                        message=message,
-                        severity=types.DiagnosticSeverity.Error,
-                        source=self._source,
+            if var_type is not None and var_name is not None: 
+                if var_type not in self._scripttypehandler.get_script_types():
+                    
+                    message: str = f"""Type Keyword "{var_type}" is not valid""" 
+                    self._diagnostics.append(types.Diagnostic(
+                            range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
+                            message=message,
+                            severity=types.DiagnosticSeverity.Error,
+                            source=self._source,
+                        )
                     )
-                )
-                continue
+                    continue
 
             # Check if Variable Defined
             if var_type is None:
+                var_name = var_name.strip() if var_name is not None else var_name
                 if var_name not in self._user_vars:
                     message = "Variable not defined"
 
@@ -107,7 +109,7 @@ class DiagnositcRules:
 
 
     def _function_return_type(self, value: str, var_type: str) -> bool:
-        """Return True if continue"""
+        """Return True when value is a function expression (valid or invalid)."""
         regex_func = re.compile(r"^(\w+)\s*\((.*)\)$")
         func_match = regex_func.match(value)
 
@@ -126,6 +128,10 @@ class DiagnositcRules:
                     source=self._source,
                 )
             )
+
+            # Function call was recognized and diagnosed; callers should not add
+            # a second "Value is not a <type>" diagnostic for the same expression.
+            return True
 
         return False
 
@@ -147,6 +153,18 @@ class DiagnositcRules:
         elif not re.match(r'^".*"$', value):
             if self._function_return_type(value, var_type):
                 return
+
+            if value.startswith('"') or value.endswith('"'):
+                if len(value) <= 1:
+                    message = "Expected string value"
+                    self._diagnostics.append(types.Diagnostic(
+                            range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
+                            message=message,
+                            severity=types.DiagnosticSeverity.Error,
+                            source=self._source,
+                        )
+                    )
+
 
             # Check If correct String Format
             striped_values: list[str] = [val.strip() for val in value.split("+")]
@@ -193,6 +211,49 @@ class DiagnositcRules:
                             source=self._source,
                         )
                     )
+            else:
+                # Check if valid Var
+                if value in self._user_vars:
+                    return
+                
+                if value.startswith('"') and value.endswith('"'):
+                    return
+
+                if value.startswith('"') and not value.endswith('"'):
+                    message = f"String {value.strip('"')} missing quote at the end"
+                    self._diagnostics.append(types.Diagnostic(
+                            range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
+                            message=message,
+                            severity=types.DiagnosticSeverity.Error,
+                            source=self._source,
+                        )
+                    )
+                    return
+
+                if not value.startswith('"') and value.endswith('"'):
+                    message = f"String {value.strip('"')} missing quote at the start"
+                    self._diagnostics.append(types.Diagnostic(
+                            range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
+                            message=message,
+                            severity=types.DiagnosticSeverity.Error,
+                            source=self._source,
+                        )
+                    )
+                    return
+
+                if self._function_return_type(value, var_type):
+                    return
+
+                message = f"String {value} value must be in quotes"
+
+                self._diagnostics.append(types.Diagnostic(
+                        range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
+                        message=message,
+                        severity=types.DiagnosticSeverity.Error,
+                        source=self._source,
+                    )
+                )
+
 
 
     def _check_int_byte_variable_assignment(self, value: str, var_type: str) -> None:
@@ -202,7 +263,7 @@ class DiagnositcRules:
             try:
                 value_int: int = int(value)
             except ValueError:
-                message = f"Value is not an {var_type}"
+                message = f"Value is not a {var_type}"
 
                 self._diagnostics.append(types.Diagnostic(
                         range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),

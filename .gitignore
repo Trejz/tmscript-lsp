@@ -13,3 +13,4 @@ server/*.spec
 *.vsix
 vs_code_client/release
 vs_code_client/*.md
+.pytest_cache

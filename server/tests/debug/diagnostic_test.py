@@ -34,7 +34,7 @@ def debug_diagnostics(document_text: str) -> None:
 
 # ============ EDIT THIS SECTION TO DEBUG ============
 document_text = """
-int test = File_Length()
+byte test = "test"
 """.strip()
 
 debug_diagnostics(document_text)
