@@ -64,7 +64,7 @@ class UserDefinedVarialbes:
                     label=var_name,
                     kind=types.CompletionItemKind.Variable,
                     detail=var_data.get("var_type", ""),
-                    documentation=f"Value = {var_data.get("var_value", "None")}"
+                    documentation=f"Value = {var_data.get('var_value', 'None')}"
                     )
                  ])
 
@@ -80,7 +80,7 @@ class UserDefinedVarialbes:
                     label=var_name,
                     kind=types.CompletionItemKind.Variable,
                     detail=var_data.get("var_type", ""),
-                    documentation=f"Value = {var_data.get("var_value", "None")}"
+                    documentation=f"Value = {var_data.get('var_value', 'None')}"
                     )
                  ])
 

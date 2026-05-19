@@ -39,7 +39,7 @@ class ScriptFunctionHandler:
                                 kind=types.MarkupKind.Markdown,
                                 value="\n".join(function_data.get("documentation", []))
                                 ),
-                            sort_text=f"{function_data.get("category", "")}_{function_name.lower()}"
+                            sort_text=f"{function_data.get('category', '')}_{function_name.lower()}"
                             ) for function_name, function_data in self._data.items()
                         ]
 
@@ -59,7 +59,7 @@ class ScriptFunctionHandler:
                                 kind=types.MarkupKind.Markdown,
                                 value="\n".join(function_data.get("documentation", []))
                                 ),
-                            sort_text=f"{function_data.get("category", "")}_{function_name.lower()}"
+                            sort_text=f"{function_data.get('category', '')}_{function_name.lower()}"
                             ) 
                         ]
 

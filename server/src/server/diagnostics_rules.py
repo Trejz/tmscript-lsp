@@ -178,7 +178,7 @@ class DiagnositcRules:
                         continue
 
                     if val.startswith('"') and not val.endswith('"'):
-                        message = f"String {val.strip('"')} missing quote at the end"
+                        message = f"String {val.strip(chr(34))} missing quote at the end"
                         self._diagnostics.append(types.Diagnostic(
                                 range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
                                 message=message,
@@ -189,7 +189,7 @@ class DiagnositcRules:
                         continue
 
                     if not val.startswith('"') and val.endswith('"'):
-                        message = f"String {val.strip('"')} missing quote at the start"
+                        message = f"String {val.strip(chr(34))} missing quote at the start"
                         self._diagnostics.append(types.Diagnostic(
                                 range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
                                 message=message,
@@ -220,7 +220,7 @@ class DiagnositcRules:
                     return
 
                 if value.startswith('"') and not value.endswith('"'):
-                    message = f"String {value.strip('"')} missing quote at the end"
+                    message = f"String {value.strip(chr(34))} missing quote at the end"
                     self._diagnostics.append(types.Diagnostic(
                             range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
                             message=message,
@@ -231,7 +231,7 @@ class DiagnositcRules:
                     return
 
                 if not value.startswith('"') and value.endswith('"'):
-                    message = f"String {value.strip('"')} missing quote at the start"
+                    message = f"String {value.strip(chr(34))} missing quote at the start"
                     self._diagnostics.append(types.Diagnostic(
                             range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
                             message=message,
