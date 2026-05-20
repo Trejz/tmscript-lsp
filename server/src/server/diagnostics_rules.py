@@ -105,6 +105,14 @@ class DiagnositcRules:
                     value = var_value.strip()
                     self._check_float_double_variable_assignment(value=value, var_type=var_type)
 
+                case VarTypeEnum._bool:
+                    # Valid var definition
+                    if var_value is None:
+                        continue
+
+                    value = var_value.strip()
+                    self._check_bool_variable_assignment(value=value)
+
         return self._diagnostics
 
 
@@ -425,7 +433,19 @@ class DiagnositcRules:
 
 
     def _check_bool_variable_assignment(self, value: str) -> None:
-        raise NotImplementedError
+        if value.strip() == "true" or value.strip() == "false":
+            return
+        else:
+            message = f"Value is not a bool"
+
+            self._diagnostics.append(types.Diagnostic(
+                    range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
+                    message=message,
+                    severity=types.DiagnosticSeverity.Error,
+                    source=self._source,
+                )
+            )
+            return
     
 
     def _check_string_array_variable_assignment(self, value: str) -> None:

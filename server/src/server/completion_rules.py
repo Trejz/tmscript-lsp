@@ -2,6 +2,8 @@ import re
 from lsprotocol import types
 from typing import TYPE_CHECKING
 
+from src.server.enums.enums import VarTypeEnum
+
 
 if TYPE_CHECKING:
     from src.server.user_types.script_types import ScriptTypeHandler
@@ -42,6 +44,10 @@ class CompletionRules:
             user_vars = self._userdefinedvaraibles.get_user_defined_variables(document=document,
                                                                               defined_var=regex_match.group(2),
                                                                               declared_type=declared_type) 
+
+            if declared_type == VarTypeEnum._bool:
+                pass
+
 
             items += user_vars if user_vars is not None else [] 
 
