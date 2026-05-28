@@ -48,7 +48,6 @@ class CompletionRules:
             if declared_type == VarTypeEnum._bool:
                 pass
 
-
             items += user_vars if user_vars is not None else [] 
 
             if items == []:
@@ -58,10 +57,8 @@ class CompletionRules:
                     is_incomplete=False,
                     items = items
                     )
-                
         return None
 
 
-    def rule_(self, before_cursor: str, document) -> list[types.CompletionItem]:
+    def rule_script_classes(self, before_cursor: str, document) -> list[types.CompletionItem]:
         raise NotImplementedError
-

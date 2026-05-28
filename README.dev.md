@@ -1,111 +1,93 @@
-# TMScript Developer Guide
+# TMScript LSP Developer Guide
 
-This guide explains how to set up local development, run the extension, and publish it.
+This is a short guide for local development of the Python LSP server and VS Code extension.
 
-## Repository Layout
+## Requirements
 
-- [server](server): Python language server implementation.
-- [vs_code_client](vs_code_client): VS Code extension client and packaging pipeline.
-
-## Prerequisites
-
-- Node.js 20 or newer
-- npm 10 or newer
-- Python 3.11 or newer
+- Python 3.11+ (recommended)
+- Node.js 18+ (recommended)
+- npm
 - VS Code
 
-## 1) Python Environment Setup
+Optional but used in release flow:
 
-Run these commands from the repository root:
+- PyInstaller (for building Windows executable server)
+- `@vscode/vsce` (for packaging the extension)
 
-Windows PowerShell:
+## Development Setup
 
-python -m venv server/.venv
+### 1) Set up Python server environment
 
-server/.venv/Scripts/Activate.ps1
+From repository root:
 
-pip install pygls lsprotocol
+```powershell
+cd server
+python -m venv .venv
+.\.venv\Scripts\Activate
+pip install -r requirements.txt
+```
 
-macOS or Linux:
+### 2) Set up VS Code extension environment
 
-python3 -m venv server/.venv
+From repository root:
 
-source server/.venv/bin/activate
-
-pip install pygls lsprotocol
-
-## 2) Node Environment Setup
-
-Run these commands from [vs_code_client](vs_code_client):
-
+```powershell
+cd vs_code_client
 npm install
-
 npm run build
+```
 
-## 3) Run Extension Locally
+### 3) Run in development
 
-1. Open the repository in VS Code.
-2. Start the launch config named Run TMScript Client from [vs_code_client/.vscode/launch.json](vs_code_client/.vscode/launch.json).
-3. In the Extension Development Host, open a .tms file.
-4. Verify autocomplete and diagnostics are active.
+- Build extension TypeScript: `npm run build` in `vs_code_client`
+- Launch Extension Development Host from VS Code
+- Open a `.tms` file to activate the extension
 
-## 4) How Single-Extension Packaging Works
+## Testing
 
-The extension bundles the Python server source into the extension at prepublish time.
+Unit tests are under `server/tests/unit/`.
 
-- Source server path: [server/src](server/src)
-- Bundled server path: [vs_code_client/server/src](vs_code_client/server/src)
-- Sync script: [vs_code_client/scripts/sync-server.mjs](vs_code_client/scripts/sync-server.mjs)
+Run tests:
 
-The prepublish script runs:
+```powershell
+cd server
+.\.venv\Scripts\Activate.ps1
+python -m pytest tests\unit
+```
 
-- npm run sync:server
-- npm run build
+Debug scripts (optional):
 
-## 5) Build VSIX Package
+- `server/tests/debug/diagnostic_test.py`
+- `server/tests/debug/user_variables.py`
 
-From [vs_code_client](vs_code_client):
+## Deployment
 
-npm run vscode:prepublish
+The project deploy flow is script-based and centered around `server/deploy.py`.
 
-npx @vscode/vsce package
+From repository root:
 
-Result: a VSIX that contains both the VS Code client and bundled Python server source.
+```powershell
+cd server
+.\.venv\Scripts\Activate.ps1
+python deploy.py
+```
 
-## 6) Publish to Marketplace
+What this does:
 
-Before publishing, update metadata in [vs_code_client/package.json](vs_code_client/package.json):
 
-- publisher
-- displayName
-- description
-- version
-- repository
-- license
-- icon
+1. Builds server executable with PyInstaller.
+2. Copies server artifact into the extension server bundle area.
+3. Builds the VS Code extension.
+4. Packages a `.vsix` into `vs_code_client/release/`.
 
-Then publish from [vs_code_client](vs_code_client):
+Related files:
 
-npx @vscode/vsce publish
+- `server/deploy.py`
+- `vs_code_client/scripts/sync-server.mjs`
 
-You will need a Visual Studio Marketplace publisher and Personal Access Token.
+## Quick Troubleshooting
 
-## Runtime Notes
+- If tests fail with import errors, run them from `server/` and ensure the virtual environment is activated.
+- If extension changes are not visible, rebuild with `npm run build` in `vs_code_client`.
+- If server launch fails in VS Code, check extension settings for `tmscriptLsp.serverRoot` and `tmscriptLsp.pythonPath`.
 
-- End users still need Python installed.
-- If Python is not on PATH, they should set tmscriptLsp.pythonPath.
-- If you want zero Python dependency, ship prebuilt platform binaries and launch those from the extension.
-
-## Common Commands
-
-From [vs_code_client](vs_code_client):
-
-npm run build
-
-npm run watch
-
-npm run vscode:prepublish
-
-From repository root with virtual environment active:
-
-python -m server.src.main

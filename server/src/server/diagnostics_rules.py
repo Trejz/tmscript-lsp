@@ -26,6 +26,16 @@ class DiagnositcRules:
         self._diag_pos_end: types.Position = types.Position(line=0,character=0)
 
 
+    def _add_diagnostic(self, message: str, severity = types.DiagnosticSeverity.Error):
+        self._diagnostics.append(types.Diagnostic(
+                range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
+                message=message,
+                severity=severity,
+                source=self._source,
+            )
+        )
+
+
     def var_value_assignmenet(self, document) -> list[types.Diagnostic]:
         self._diagnostics: list[types.Diagnostic] = []
 
@@ -52,15 +62,8 @@ class DiagnositcRules:
             # Check if type Keyword is correct
             if var_type is not None and var_name is not None: 
                 if var_type not in self._scripttypehandler.get_script_types():
-                    
                     message: str = f"""Type Keyword "{var_type}" is not valid""" 
-                    self._diagnostics.append(types.Diagnostic(
-                            range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                            message=message,
-                            severity=types.DiagnosticSeverity.Error,
-                            source=self._source,
-                        )
-                    )
+                    self._add_diagnostic(message)
                     continue
 
             # Check if Variable Defined
@@ -68,15 +71,7 @@ class DiagnositcRules:
                 var_name = var_name.strip() if var_name is not None else var_name
                 if var_name not in self._user_vars:
                     message = "Variable not defined"
-
-                    self._diagnostics.append(types.Diagnostic(
-                            range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                            message=message,
-                            severity=types.DiagnosticSeverity.Error,
-                            source=self._source,
-                        )
-                    )
-
+                    self._add_diagnostic(message)
                     continue
 
             # Match to var_type
@@ -128,17 +123,8 @@ class DiagnositcRules:
                 return True
 
             message = f"Invalid type. Function returns: {return_types}"
+            self._add_diagnostic(message)
 
-            self._diagnostics.append(types.Diagnostic(
-                    range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                    message=message,
-                    severity=types.DiagnosticSeverity.Error,
-                    source=self._source,
-                )
-            )
-
-            # Function call was recognized and diagnosed; callers should not add
-            # a second "Value is not a <type>" diagnostic for the same expression.
             return True
 
         return False
@@ -148,14 +134,7 @@ class DiagnositcRules:
         # No Value after =
         if value == "":
             message = "Expected string value"
-
-            self._diagnostics.append(types.Diagnostic(
-                    range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                    message=message,
-                    severity=types.DiagnosticSeverity.Error,
-                    source=self._source,
-                )
-            )
+            self._add_diagnostic(message)
 
         # Wrong value after =
         elif not re.match(r'^".*"$', value):
@@ -165,13 +144,7 @@ class DiagnositcRules:
             if value.startswith('"') or value.endswith('"'):
                 if len(value) <= 1:
                     message = "Expected string value"
-                    self._diagnostics.append(types.Diagnostic(
-                            range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                            message=message,
-                            severity=types.DiagnosticSeverity.Error,
-                            source=self._source,
-                        )
-                    )
+                    self._add_diagnostic(message)
 
 
             # Check If correct String Format
@@ -187,24 +160,12 @@ class DiagnositcRules:
 
                     if val.startswith('"') and not val.endswith('"'):
                         message = f"String {val.strip(chr(34))} missing quote at the end"
-                        self._diagnostics.append(types.Diagnostic(
-                                range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                                message=message,
-                                severity=types.DiagnosticSeverity.Error,
-                                source=self._source,
-                            )
-                        )
+                        self._add_diagnostic(message)
                         continue
 
                     if not val.startswith('"') and val.endswith('"'):
                         message = f"String {val.strip(chr(34))} missing quote at the start"
-                        self._diagnostics.append(types.Diagnostic(
-                                range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                                message=message,
-                                severity=types.DiagnosticSeverity.Error,
-                                source=self._source,
-                            )
-                        )
+                        self._add_diagnostic(message)
                         continue
 
                     if self._function_return_type(val, var_type):
@@ -212,13 +173,7 @@ class DiagnositcRules:
 
                     message = f"String {val} value must be in quotes"
 
-                    self._diagnostics.append(types.Diagnostic(
-                            range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                            message=message,
-                            severity=types.DiagnosticSeverity.Error,
-                            source=self._source,
-                        )
-                    )
+                    self._add_diagnostic(message)
             else:
                 # Check if valid Var
                 if value in self._user_vars:
@@ -229,24 +184,12 @@ class DiagnositcRules:
 
                 if value.startswith('"') and not value.endswith('"'):
                     message = f"String {value.strip(chr(34))} missing quote at the end"
-                    self._diagnostics.append(types.Diagnostic(
-                            range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                            message=message,
-                            severity=types.DiagnosticSeverity.Error,
-                            source=self._source,
-                        )
-                    )
+                    self._add_diagnostic(message)
                     return
 
                 if not value.startswith('"') and value.endswith('"'):
                     message = f"String {value.strip(chr(34))} missing quote at the start"
-                    self._diagnostics.append(types.Diagnostic(
-                            range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                            message=message,
-                            severity=types.DiagnosticSeverity.Error,
-                            source=self._source,
-                        )
-                    )
+                    self._add_diagnostic(message)
                     return
 
                 if self._function_return_type(value, var_type):
@@ -254,13 +197,7 @@ class DiagnositcRules:
 
                 message = f"String {value} value must be in quotes"
 
-                self._diagnostics.append(types.Diagnostic(
-                        range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                        message=message,
-                        severity=types.DiagnosticSeverity.Error,
-                        source=self._source,
-                    )
-                )
+                self._add_diagnostic(message)
 
 
 
@@ -273,25 +210,13 @@ class DiagnositcRules:
             except ValueError:
                 message = f"Value is not a {var_type}"
 
-                self._diagnostics.append(types.Diagnostic(
-                        range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                        message=message,
-                        severity=types.DiagnosticSeverity.Error,
-                        source=self._source,
-                    )
-                )
+                self._add_diagnostic(message)
                 return
 
             if var_type == VarTypeEnum._byte and value_int < 0:
                 message = "Byte values can't have negative values"
 
-                self._diagnostics.append(types.Diagnostic(
-                        range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                        message=message,
-                        severity=types.DiagnosticSeverity.Error,
-                        source=self._source,
-                    )
-                )
+                self._add_diagnostic(message)
                 return
 
         # More than 1 Value
@@ -313,25 +238,13 @@ class DiagnositcRules:
                         else:
                             message = f"Value is not a {var_type}"
 
-                        self._diagnostics.append(types.Diagnostic(
-                                range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                                message=message,
-                                severity=types.DiagnosticSeverity.Error,
-                                source=self._source,
-                            )
-                        )
+                        self._add_diagnostic(message)
                         continue
 
                     if var_type == VarTypeEnum._byte and value_int < 0:
                         message = "Byte values can't have negative values"
 
-                        self._diagnostics.append(types.Diagnostic(
-                                range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                                message=message,
-                                severity=types.DiagnosticSeverity.Error,
-                                source=self._source,
-                            )
-                        )
+                        self._add_diagnostic(message)
                         continue
 
                     if isinstance(value_int, int):
@@ -349,13 +262,7 @@ class DiagnositcRules:
                     else:
                         message = f"Value is not a {var_type}"
 
-                    self._diagnostics.append(types.Diagnostic(
-                            range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                            message=message,
-                            severity=types.DiagnosticSeverity.Error,
-                            source=self._source,
-                        )
-                    )
+                    self._add_diagnostic(message)
                     return
 
                 if isinstance(value_int, int):
@@ -370,13 +277,7 @@ class DiagnositcRules:
             except ValueError:
                 message = f"Value is not a {var_type}"
 
-                self._diagnostics.append(types.Diagnostic(
-                        range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                        message=message,
-                        severity=types.DiagnosticSeverity.Error,
-                        source=self._source,
-                    )
-                )
+                self._add_diagnostic(message)
                 return
 
         # More than 1 Value
@@ -398,13 +299,7 @@ class DiagnositcRules:
                         else:
                             message = f"Value is not a {var_type}"
 
-                        self._diagnostics.append(types.Diagnostic(
-                                range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                                message=message,
-                                severity=types.DiagnosticSeverity.Error,
-                                source=self._source,
-                            )
-                        )
+                        self._add_diagnostic(message)
                         continue
 
             else:        
@@ -419,13 +314,7 @@ class DiagnositcRules:
                     else:
                         message = f"Value is not a {var_type}"
 
-                    self._diagnostics.append(types.Diagnostic(
-                            range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                            message=message,
-                            severity=types.DiagnosticSeverity.Error,
-                            source=self._source,
-                        )
-                    )
+                    self._add_diagnostic(message)
                     return
 
                 if isinstance(value_float, float):
@@ -436,15 +325,9 @@ class DiagnositcRules:
         if value.strip() == "true" or value.strip() == "false":
             return
         else:
-            message = f"Value is not a bool"
+            message = "Value is not a bool"
 
-            self._diagnostics.append(types.Diagnostic(
-                    range=types.Range(start=self._diag_pos_start,end=self._diag_pos_end),
-                    message=message,
-                    severity=types.DiagnosticSeverity.Error,
-                    source=self._source,
-                )
-            )
+            self._add_diagnostic(message)
             return
     
 

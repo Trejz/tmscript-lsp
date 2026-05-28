@@ -1,40 +1,58 @@
-# TMScript for VS Code
+# TMScript LSP
 
-TMScript for VS Code adds language support for TMS files.
+TMScript LSP is language support for the Techman Robot scripting language in Visual Studio Code.
 
-## What You Get
+It consists of:
+- A Python Language Server Protocol (LSP) server.
+- A VS Code extension client that starts and connects to that server.
 
-- Language server powered editing for .tms files
-- Autocomplete for keywords, script functions, types, and user-defined variables
-- Diagnostics while you type
+The extension targets `.tms` files and provides core editing intelligence for TMScript.
 
-## Quick Start
+## What It Does
 
-1. Install TMScript for VS Code from the Extensions view.
-2. Open a folder that contains TMS files.
-3. Open any file ending in .tms.
-4. Start typing to see completions and diagnostics.
+Current capabilities include:
 
-## Requirements
+- Auto-completion for:
+	- TMScript keywords
+	- Built-in script functions
+	- Built-in script types
+	- User-defined variables from the current document
+- Type-aware completion while assigning values:
+	- Suggests functions that return a compatible type
+	- Suggests user variables with matching declared type
+- Diagnostics for variable declarations and assignments:
+	- Invalid type keywords
+	- Undefined variable assignments
+	- Type mismatch in assignments (for example int/byte/float/double/string/bool)
+	- Invalid function return type usage in assignments
+	- String formatting and quoting issues
+	- Byte-specific constraints (for example negative values)
 
-- Python must be installed and available on your machine.
-- The extension will try to find Python automatically.
+## Architecture
 
-## Extension Settings
+### LSP Server (Python)
 
-You can configure these settings from VS Code Settings:
+The server is implemented with `pygls` and `lsprotocol` and currently handles:
 
-- tmscriptLsp.pythonPath: Path to a specific Python executable.
-- tmscriptLsp.serverRoot: Optional override for the server folder.
-- tmscriptLsp.serverModule: Python module to run. Default is src.main.
-- tmscriptLsp.trace.server: LSP trace level (off, messages, verbose).
+- `textDocument/completion`
+- `textDocument/didOpen`
+- `textDocument/didChange`
 
-## Troubleshooting
+Completion and diagnostic logic is driven by rule handlers and asset files containing TMScript metadata (keywords, functions, methods, and types).
 
-- If language features do not appear, reload the VS Code window.
-- If server startup fails, set tmscriptLsp.pythonPath explicitly.
-- Open the Output panel and choose TMScript LSP to inspect logs.
+### VS Code Extension (TypeScript)
 
-## Feedback
+The VS Code client uses `vscode-languageclient` to launch and communicate with the server.
 
-For issues and feature requests, use the project issue tracker.
+It can run the server in either mode:
+- As a packaged executable (preferred when available)
+- As a Python module fallback (`src.main` by default)
+
+It also contributes:
+- TMScript language registration (`tmscript`)
+- `.tms` file association
+- Extension settings for server path, Python path, module entrypoint, and trace level
+
+---
+
+Note: This extension is not officially affiliated with Techman Robot Inc. TMscript documentation is based on TMscript 2.24.

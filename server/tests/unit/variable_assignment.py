@@ -58,7 +58,7 @@ def test_wrong_assignment(diagnostics_rules, make_document):
 
     diagnostics = diagnostics_rules.var_value_assignmenet(document)
     
-    messages: list = [
+    messages: list[str] = [
                 "Value is not a int",
                 "Value is not a int",
                 "Invalid type. Function returns: string",
