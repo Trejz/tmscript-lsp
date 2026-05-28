@@ -2,7 +2,8 @@
   "venvPath": "server",
   "venv": ".venv",
   "include": [
-    "server/src"
+    "server/src",
+    "server"
   ],
   "executionEnvironments": [
     {

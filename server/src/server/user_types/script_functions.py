@@ -1,16 +1,27 @@
 import json
 from pathlib import Path
 from lsprotocol import types
+import sys
 
 
 class ScriptFunctionHandler:
     def __init__(self) -> None:
-        self._script_functions: list[types.CompletionItem]
+        self._script_functions: list[types.CompletionItem] = []
         self._data: dict[str,dict]
         # Resolve to src/server/assets
-        self._assets_dir = Path(__file__).parent.parent / "assets"
+        self._assets_dir = self._get_assets_dir()
 
         self._read_json()
+
+
+    def _get_assets_dir(self) -> Path:
+        """Get path to bundled resource."""
+        if getattr(sys, "frozen", False):
+            base_path = Path(getattr(sys, "_MEIPASS", Path(__file__).parent), "assets")
+        else:
+            base_path = Path(__file__).parent.parent / "assets"
+
+        return base_path
 
 
     def _read_json(self) -> None:
@@ -28,7 +39,7 @@ class ScriptFunctionHandler:
                                 kind=types.MarkupKind.Markdown,
                                 value="\n".join(function_data.get("documentation", []))
                                 ),
-                            sort_text=f"{function_data.get("category", "")}_{function_name.lower()}"
+                            sort_text=f"{function_data.get('category', '')}_{function_name.lower()}"
                             ) for function_name, function_data in self._data.items()
                         ]
 
@@ -48,7 +59,7 @@ class ScriptFunctionHandler:
                                 kind=types.MarkupKind.Markdown,
                                 value="\n".join(function_data.get("documentation", []))
                                 ),
-                            sort_text=f"{function_data.get("category", "")}_{function_name.lower()}"
+                            sort_text=f"{function_data.get('category', '')}_{function_name.lower()}"
                             ) 
                         ]
 

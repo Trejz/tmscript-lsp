@@ -2,10 +2,12 @@ import re
 from lsprotocol import types
 from typing import TYPE_CHECKING
 
+from src.server.enums.enums import VarTypeEnum
+
 
 if TYPE_CHECKING:
     from src.server.user_types.script_types import ScriptTypeHandler
-    from server.user_types.script_functions import ScriptFunctionHandler
+    from src.server.user_types.script_functions import ScriptFunctionHandler
     from src.server.user_types.user_variables import UserDefinedVarialbes
 
 class CompletionRules:
@@ -43,6 +45,9 @@ class CompletionRules:
                                                                               defined_var=regex_match.group(2),
                                                                               declared_type=declared_type) 
 
+            if declared_type == VarTypeEnum._bool:
+                pass
+
             items += user_vars if user_vars is not None else [] 
 
             if items == []:
@@ -52,10 +57,8 @@ class CompletionRules:
                     is_incomplete=False,
                     items = items
                     )
-                
         return None
 
 
-    def rule_(self, before_cursor: str, document) -> list[types.CompletionItem]:
+    def rule_script_classes(self, before_cursor: str, document) -> list[types.CompletionItem]:
         raise NotImplementedError
-
