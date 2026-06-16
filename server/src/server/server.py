@@ -7,6 +7,7 @@ from src.server.user_types.script_types import ScriptTypeHandler
 from src.server.completion_rules import CompletionRules
 from src.server.user_types.user_variables import UserDefinedVarialbes
 from src.server.diagnostics_rules import DiagnositcRules
+from src.server.user_types.script_methods import ScriptMethodHandler
 
 server = LanguageServer("tmscript-lsp", "v0.0.1")
 
@@ -15,9 +16,10 @@ keywordhandler = KeywordHandler()
 scriptfunctionhandler = ScriptFunctionHandler()
 scripttypehandler = ScriptTypeHandler()
 userdefinedvariables = UserDefinedVarialbes(scripttypehandler)
+scriptmethodhandler = ScriptMethodHandler()
 
-completion_rules = CompletionRules(scripttypehandler, scriptfunctionhandler, userdefinedvariables)
-diagnostics_rules = DiagnositcRules(scriptfunctionhandler, userdefinedvariables, scripttypehandler)
+completion_rules = CompletionRules(scripttypehandler, scriptfunctionhandler, userdefinedvariables, scriptmethodhandler)
+diagnostics_rules = DiagnositcRules(scriptfunctionhandler, userdefinedvariables, scripttypehandler, scriptmethodhandler)
 
 # On Completion Request
 @server.feature(types.TEXT_DOCUMENT_COMPLETION)
@@ -28,7 +30,8 @@ def completions(ls: LanguageServer, params: types.CompletionParams):
     before_cursor: str = line[:params.position.character]
 
     rules = [
-            completion_rules.rule_return_variable_type
+            completion_rules.rule_return_variable_type,
+            completion_rules.rule_script_classes
             ]
 
     for rule in rules:
@@ -41,6 +44,7 @@ def completions(ls: LanguageServer, params: types.CompletionParams):
     items += scriptfunctionhandler.get_script_functions_completion()
     items += scripttypehandler.get_script_types_completion()
     items += userdefinedvariables.get_all_user_defined_variables(document)
+    items += scriptmethodhandler.get_scriptclasses()
 
     return types.CompletionList(
         is_incomplete=False,

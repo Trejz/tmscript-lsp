@@ -2,6 +2,7 @@ from src.server.user_types.script_types import ScriptTypeHandler
 from src.server.user_types.user_variables import UserDefinedVarialbes
 from src.server.user_types.script_functions import ScriptFunctionHandler
 from src.server.diagnostics_rules import DiagnositcRules
+from src.server.user_types.script_methods import ScriptMethodHandler
 
 
 class TestDocument:
@@ -14,9 +15,10 @@ def debug_diagnostics(document_text: str) -> None:
 	handler = ScriptTypeHandler()
 	script_func_handler = ScriptFunctionHandler()
 	user_vars = UserDefinedVarialbes(handler)
+	scripthandler = ScriptMethodHandler()
 	document = TestDocument(document_text)
 	
-	diagnostics_rules = DiagnositcRules(script_func_handler, user_vars, handler)
+	diagnostics_rules = DiagnositcRules(script_func_handler, user_vars, handler, scripthandler)
 	
 	print(f"\n=== Diagnostics Debug ===")
 	print(f"Document:\n{document_text}\n")
@@ -34,7 +36,7 @@ def debug_diagnostics(document_text: str) -> None:
 
 # ============ EDIT THIS SECTION TO DEBUG ============
 document_text = """
-byte test = "test"
+string[] test = {
 """.strip()
 
 debug_diagnostics(document_text)

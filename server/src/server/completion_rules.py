@@ -9,16 +9,19 @@ if TYPE_CHECKING:
     from src.server.user_types.script_types import ScriptTypeHandler
     from src.server.user_types.script_functions import ScriptFunctionHandler
     from src.server.user_types.user_variables import UserDefinedVarialbes
+    from src.server.user_types.script_methods import ScriptMethodHandler
 
 class CompletionRules:
     def __init__(self,
                  scripttypehandler: "ScriptTypeHandler",
                  scriptfunctionhandler: "ScriptFunctionHandler",
-                 userdefinedvariables: "UserDefinedVarialbes") -> None:
+                 userdefinedvariables: "UserDefinedVarialbes",
+                 scriptmethodhandler: "ScriptMethodHandler") -> None:
 
         self._scripttypehandler: "ScriptTypeHandler" = scripttypehandler
         self._scriptfunctionhandler: "ScriptFunctionHandler" = scriptfunctionhandler
         self._userdefinedvaraibles: "UserDefinedVarialbes" = userdefinedvariables
+        self._scriptmehtodhandler: "ScriptMethodHandler" = scriptmethodhandler
 
     
     def rule_return_variable_type(self, before_cursor: str, document) -> types.CompletionList | None:
@@ -60,5 +63,14 @@ class CompletionRules:
         return None
 
 
-    def rule_script_classes(self, before_cursor: str, document) -> list[types.CompletionItem]:
-        raise NotImplementedError
+    def rule_script_classes(self, before_cursor: str, document) -> types.CompletionList | None:
+        items = self._scriptmehtodhandler.get_member_completions(before_cursor, document)
+
+        if not items:
+            return None
+
+        return types.CompletionList(
+                is_incomplete=False,
+                items = items
+                )
+

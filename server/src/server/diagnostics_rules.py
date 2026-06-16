@@ -8,17 +8,20 @@ if TYPE_CHECKING:
     from src.server.user_types.script_functions import ScriptFunctionHandler
     from src.server.user_types.user_variables import UserDefinedVarialbes
     from src.server.user_types.script_types import ScriptTypeHandler
+    from src.server.user_types.script_methods import ScriptMethodHandler
 
 class DiagnositcRules:
     def __init__(self, 
                  scriptfunctionhandler: "ScriptFunctionHandler", 
                  userdefinedvariables: "UserDefinedVarialbes",
-                 scripttypehandler: "ScriptTypeHandler") -> None:
+                 scripttypehandler: "ScriptTypeHandler",
+                 scriptmethodhandler: "ScriptMethodHandler") -> None:
 
         self._source: str = "tmscript-lsp"
         self._scriptfunctionhandler: "ScriptFunctionHandler" = scriptfunctionhandler
         self._userdefinedvariables: "UserDefinedVarialbes" = userdefinedvariables
         self._scripttypehandler: "ScriptTypeHandler" = scripttypehandler
+        self._scriptmethodhandler: "ScriptMethodHandler" = scriptmethodhandler
         
         self._diagnostics: list[types.Diagnostic] = []
         self._user_vars: dict[str,dict[str,str]] = {}
@@ -39,7 +42,7 @@ class DiagnositcRules:
     def var_value_assignmenet(self, document) -> list[types.Diagnostic]:
         self._diagnostics: list[types.Diagnostic] = []
 
-        regex_var_declaration = re.compile(r"^\s*(?:(\w+)\s+)?(\w+\s*)(?:=\s*(.*))?$")
+        regex_var_declaration = re.compile(r"^\s*(?:(\w+(?:\[\])?)\s+)?(\w+)\s*(?:=\s*(.*))?$")
 
         for line_num, line in enumerate(document.lines):
             line = line.lstrip("\ufeff").rstrip("\r\n")
@@ -61,7 +64,8 @@ class DiagnositcRules:
 
             # Check if type Keyword is correct
             if var_type is not None and var_name is not None: 
-                if var_type not in self._scripttypehandler.get_script_types():
+                if (var_type not in self._scripttypehandler.get_script_types() and
+                    var_type not in self._scriptmethodhandler.get_script_methods()):
                     message: str = f"""Type Keyword "{var_type}" is not valid""" 
                     self._add_diagnostic(message)
                     continue
@@ -107,6 +111,38 @@ class DiagnositcRules:
 
                     value = var_value.strip()
                     self._check_bool_variable_assignment(value=value)
+
+                case VarTypeEnum._string_array:
+                    # Valid var definition
+                    if var_value is None:
+                        continue
+
+                    value = var_value.strip()
+                    self._check_string_array_variable_assignment(value=value)
+
+                case VarTypeEnum._int_array | VarTypeEnum._byte_array:
+                    # Valid var definition
+                    if var_value is None:
+                        continue
+
+                    value = var_value.strip()
+                    self._check_int_byte_array_variable_assignment(value=value, var_type=var_type)
+
+                case VarTypeEnum._float_array | VarTypeEnum._double_array:
+                    # Valid var definition
+                    if var_value is None:
+                        continue
+
+                    value = var_value.strip()
+                    self._check_float_double_array_variable_assignment(value=value, var_type=var_type)
+
+                case VarTypeEnum._bool_array:
+                    # Valid var definition
+                    if var_value is None:
+                        continue
+
+                    value = var_value.strip()
+                    self._check_bool_array_variable_assignment(value=value)
 
         return self._diagnostics
 
@@ -331,25 +367,137 @@ class DiagnositcRules:
             return
     
 
+    #Array Checks
+    def _check_array_brackets(self, value, var_type: str) -> bool:
+        """Returns True if diagnositc is present"""
+
+        if value == "":
+            message = f"Expected {var_type} Array Value"
+            self._add_diagnostic(message)
+            return True
+
+        if value.startswith("{") and not value.endswith("}"):
+            message = "Missing } at the end"
+            self._add_diagnostic(message)
+            return True
+        
+        if not value.startswith("{") and value.endswith("}"):
+            message = "Missing } at the start"
+            self._add_diagnostic(message)
+            return True
+        
+        return False
+
+
     def _check_string_array_variable_assignment(self, value: str) -> None:
-        raise NotImplementedError
+        stringarray_regex = re.compile(r'^"[^"]*"$')
+        if value.startswith("{") and value.endswith("}"):
+            content = value[1:-1].strip()
+            if not content:
+                return
+
+            array_values = [v.strip() for v in content.split(",")]
+            for i, val in enumerate(array_values):
+                if not stringarray_regex.fullmatch(val):
+                    message = f"Value at index {i} is not a string"
+                    self._add_diagnostic(message)
+                    return
+
+            return
+        
+        if self._check_array_brackets(value=value, var_type="string"):
+            return
+
+        message = "Value is not a string Array"
+        self._add_diagnostic(message)
+
+
+    def _check_int_byte_array_variable_assignment(self, value: str, var_type: str) -> None:
+        int_regex = re.compile(r"^-?\d+$")
+        var_type = var_type.strip("[]")
+        if value.startswith("{") and value.endswith("}"):
+            content = value[1:-1].strip()
+            if not content:
+                return
+
+            array_values = [v.strip() for v in content.split(",")]
+            for i, val in enumerate(array_values):
+                if not int_regex.fullmatch(val):
+                    try:
+                        value_int: int = int(val)
+                    except ValueError:
+                        message = f"Value at index {i} is not a {var_type}"
+                        self._add_diagnostic(message)
+                        return
+
+                    if var_type == VarTypeEnum._byte and value_int < 0:
+                        message = "Byte values can't have negative values"
+
+                        self._add_diagnostic(message)
+                        return
+
+                    message = f"Value is not a {var_type}"
+                    self._add_diagnostic(message)
+                    return
+            return
+        
+        if self._check_array_brackets(value=value, var_type=var_type):
+            return
+        
+        message = f"Value is not a {var_type} Array"
+        self._add_diagnostic(message)
+
+
+    def _check_float_double_array_variable_assignment(self, value: str, var_type: str) -> None:
+        float_regex = re.compile(r"^-?(\d+\.\d+|\.\d+)$")
+        var_type = var_type.strip("[]")
+        if value.startswith("{") and value.endswith("}"):
+            content = value[1:-1].strip()
+            if not content:
+                return
+
+            array_values = [v.strip() for v in content.split(",")]
+            for i, val in enumerate(array_values):
+                if not float_regex.fullmatch(val):
+                    try:
+                        float(val)
+                    except ValueError:
+                        message = f"Value at index {i} is not a {var_type}"
+                        self._add_diagnostic(message)
+                        return
+
+                    message = f"Value is not a {var_type}"
+                    self._add_diagnostic(message)
+                    return          
+            return
+        
+        if self._check_array_brackets(value=value, var_type=var_type):
+            return
+        
+        message = f"Value is not a {var_type} Array"
+        self._add_diagnostic(message)
     
 
-    def _check_int_array_variable_assignment(self, value: str) -> None:
-        raise NotImplementedError
+    def _check_bool_array_variable_assignment(self, value: str) -> None:
+        if value.startswith("{") and value.endswith("}"):
+            content = value[1:-1].strip()
+            if not content:
+                return
 
+            array_values = [v.strip() for v in content.split(",")]
+            for i, val in enumerate(array_values):
+                if val == "true" or val == "false":
+                    continue
+                else:
+                    message = f"Value at index {i} is not a bool"
+                    self._add_diagnostic(message)
+                    return
 
-    def _check_float_array_variable_assignment(self, value: str) -> None:
-        raise NotImplementedError
-    
+            return
+        
+        if self._check_array_brackets(value=value, var_type="bool"):
+            return
 
-    def _check_double_array_variable_assignment(self, value: str) -> None:
-        raise NotImplementedError
-    
+        message = "Value is not a bool Array"
+        self._add_diagnostic(message)
 
-    def _check_byte_array_variable_assignment(self, value: str) -> None:
-        raise NotImplementedError
-    
-
-    def _check_bool_arra_variable_assignment(self, value: str) -> None:
-        raise NotImplementedError
