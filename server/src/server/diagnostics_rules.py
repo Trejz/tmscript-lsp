@@ -42,19 +42,29 @@ class DiagnositcRules:
     def var_value_assignmenet(self, document) -> list[types.Diagnostic]:
         self._diagnostics: list[types.Diagnostic] = []
 
-        regex_var_declaration = re.compile(r"^\s*(?:(\w+(?:\[\])?)\s+)?(\w+)\s*(?:=\s*(.*))?$")
+        #regex_var_declaration = re.compile(r"^\s*(?:(\w+(?:\[])?)\s+)?(\w+)\s*(?:=\s*(.*))?$")
+        types_regex = "|".join(map(re.escape, self._scripttypehandler.get_script_types()))
+
+        definition_match = re.compile(rf"^\s*({types_regex})\s+(\w+)(?:\s*=\s*(.*))?$")
+        assignment_match = re.compile(r"^\s*(\w+)\s*=\s*(.*)$")
 
         for line_num, line in enumerate(document.lines):
             line = line.lstrip("\ufeff").rstrip("\r\n")
-            regex_match = regex_var_declaration.match(line)
+            regex_defmatch = definition_match.match(line)
+            regex_assignmatch = assignment_match.match(line)
             
             # Skip if no match
-            if not regex_match:
+            if regex_defmatch:
+                var_type: str | None = regex_defmatch.group(1)
+                var_name: str | None = regex_defmatch.group(2)
+                var_value: str | None = regex_defmatch.group(3)
+            elif regex_assignmatch:
+                var_type: str | None = None
+                var_name: str | None = regex_assignmatch.group(1)
+                var_value: str | None = regex_assignmatch.group(2)
+            else:
                 continue
-            
-            var_type: str | None = regex_match.group(1)
-            var_name: str | None = regex_match.group(2)
-            var_value: str | None = regex_match.group(3)
+
 
             self._user_vars = self._userdefinedvariables.collect_variables(document)
 
@@ -77,70 +87,41 @@ class DiagnositcRules:
                     message = "Variable not defined"
                     self._add_diagnostic(message)
                     continue
+            
+            if var_value is None:
+                continue
 
             # Match to var_type
             match var_type:
                 case VarTypeEnum._string:
-                    # Valid var definition
-                    if var_value is None:
-                        continue
-
                     value = var_value.strip()
                     self._check_string_variable_assignment(value=value, var_type=var_type)
 
                 case VarTypeEnum._int | VarTypeEnum._byte:
-                    # Valid var definition
-                    if var_value is None:
-                        continue
-
                     value = var_value.strip()
                     self._check_int_byte_variable_assignment(value=value,var_type=var_type)
 
                 case VarTypeEnum._float | VarTypeEnum._double:
-                    # Valid var definition
-                    if var_value is None:
-                        continue
-
                     value = var_value.strip()
                     self._check_float_double_variable_assignment(value=value, var_type=var_type)
 
                 case VarTypeEnum._bool:
-                    # Valid var definition
-                    if var_value is None:
-                        continue
-
                     value = var_value.strip()
                     self._check_bool_variable_assignment(value=value)
 
                 case VarTypeEnum._string_array:
-                    # Valid var definition
-                    if var_value is None:
-                        continue
-
                     value = var_value.strip()
                     self._check_string_array_variable_assignment(value=value)
 
                 case VarTypeEnum._int_array | VarTypeEnum._byte_array:
-                    # Valid var definition
-                    if var_value is None:
-                        continue
-
                     value = var_value.strip()
                     self._check_int_byte_array_variable_assignment(value=value, var_type=var_type)
 
                 case VarTypeEnum._float_array | VarTypeEnum._double_array:
-                    # Valid var definition
-                    if var_value is None:
-                        continue
-
                     value = var_value.strip()
                     self._check_float_double_array_variable_assignment(value=value, var_type=var_type)
 
                 case VarTypeEnum._bool_array:
-                    # Valid var definition
-                    if var_value is None:
-                        continue
-
                     value = var_value.strip()
                     self._check_bool_array_variable_assignment(value=value)
 
@@ -414,7 +395,7 @@ class DiagnositcRules:
 
     def _check_int_byte_array_variable_assignment(self, value: str, var_type: str) -> None:
         int_regex = re.compile(r"^-?\d+$")
-        var_type = var_type.strip("[]")
+        var_type = var_type.removesuffix("[]")
         if value.startswith("{") and value.endswith("}"):
             content = value[1:-1].strip()
             if not content:
@@ -450,7 +431,7 @@ class DiagnositcRules:
 
     def _check_float_double_array_variable_assignment(self, value: str, var_type: str) -> None:
         float_regex = re.compile(r"^-?(\d+\.\d+|\.\d+)$")
-        var_type = var_type.strip("[]")
+        var_type = var_type.removesuffix("[]")
         if value.startswith("{") and value.endswith("}"):
             content = value[1:-1].strip()
             if not content:
@@ -492,7 +473,6 @@ class DiagnositcRules:
                     message = f"Value at index {i} is not a bool"
                     self._add_diagnostic(message)
                     return
-
             return
         
         if self._check_array_brackets(value=value, var_type="bool"):
