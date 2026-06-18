@@ -2,86 +2,151 @@
   "scriptclasses": {
     "SerialPort": {
       "description": "Use SerialPort class and declare variables to create a COM port device. The variable name will be the device name.",
-      "constructor": "SerialPort <variableName> = string, int, string, int, float, int, bool, bool, bool",
-      "attributes": {
-      },
-      "methods": {
-      }
+      "constructors": [
+          {
+              "types": ["string", "int", "string", "int", "float", "int", "bool", "bool", "bool"],
+              "texts": ["Description", "Bits per Second", "parity check", "Data Bits", "Stop Bits", "Timeout", "DTR/DSR", "RTS/CTS", "XON/XOFF"]
+          },
+          {
+              "types": ["string", "int", "string", "int", "float", "int"],
+              "texts": ["Description", "Bits per Second", "parity check", "Data Bits", "Stop Bits", "Timeout"]
+          },
+          {
+              "types": ["string", "int", "string", "int", "float"],
+              "texts": ["Description", "Bits per Second", "parity check", "Data Bits", "Stop Bits"]
+          },
+          {
+              "types": ["string", "int"],
+              "texts": ["Description", "Bits per Second"]
+          }
+      ],
+      "attributes": {},
+      "methods": {}
     },
     "Socket": {
       "description": "Use Socket class and declare variables to create a TCP/IP communication device. The variable name will be the device name.",
-      "constructor": "Socket <variableName> = string, int, int",
-      "attributes": {
-      },
-      "methods": {
-      }
+      "constructors": [
+          {
+              "types": ["string", "int", "int"],
+              "texts": ["IP", "Port", "Timeout"]
+          },
+          {
+              "types": ["string", "int"],
+              "texts": ["IP", "Port"]
+          }
+      ],
+      "attributes": {},
+      "methods": {}
     },
     "MDesicion": {
       "description": "Use the MDecision class with variable declaration to allow users to configure M-Decision nodes for conditional judgments or to display pop-up messages.",
-      "constructor": "Socket <variableName> = string, string",
-      "attributes": {
-      },
+      "constructors": [{
+          "types": ["string", "string"],
+          "texts": ["Headline", "Text"]
+      }],
+      "attributes": {},
       "methods": {
         "Reset": {
           "documentation": "Reset all MDecision parameters to the default.",
-          "parameters": [
-            "void"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": [""],
+              "texts": [""],
+              "return": ["void"]
+          }
         },
         "Title": {
           "documentation": "The pop-up headline",
-          "parameters": [
-            "string - Title"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["string"],
+              "texts": ["Title"],
+              "return": ["void"]
+          }
         },
         "Description": {
           "documentation": "The pop-up text",
-          "parameters": [
-            "string - Text"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["string"],
+              "texts": ["Title"],
+              "return": ["void"]
+          }
         },
         "Timeout": {
           "documentation": "Timeout",
-          "parameters": [
-            "int - Timout (ms)" , "int - Default index after Timeout"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int"],
+              "texts": ["Timeout"],
+              "return": ["void"]
+          }
         },
         "TimeoutDefaultCase": {
           "documentation": "The default index after the timeout",
-          "parameters": [
-            "int - Default index after Timeout"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int"],
+              "texts": ["Index"],
+              "return": ["void"]
+          }
         },
         "Case": {
           "documentation": "Add, delete, or modify the conditional judgement",
-          "parameters": [
-            "int - Condition or the index of the button", "string - Text to display", "string - Text color", "string - Background color", "bool - Conditional can be true/false"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int", "string", "string", "string", "bool"],
+              "texts": ["Index", "Text", "Color", "Backgroundcolor", "Conditional"],
+              "return": ["void"]
+          }
         },
         "Show": {
           "documentation": "Check the conditional judgement",
-          "parameters": [
-            "void - No Parameters"
-          ],
-          "return": "int"
+          "parameters": {
+              "types": [""],
+              "texts": [""],
+              "return": ["int"]
+          }
         }
       }
     },
     "TPoint": {
       "description": "Use TPoint Class and declare variables to create the point names and the point values. The variable name will be the point name.",
-      "constructor": [
-        "TPoint <variableName> = float[]",
-        "TPoint <variableName> = float, float, float, float, float, float",
-        "TPoint <variableName> = string, float[]",
-        "TPoint <variableName> = string, float[], string, string",
-        "TPoint <variableName> = float[], string, string",
-        "TPoint <variableName> = string, float[], float[], string, string"
+      "constructors": [
+          {
+              "types": ["float[]"],
+              "texts": ["Coordinate"]
+          },
+          {
+              "types": ["float", "float", "float", "float", "float", "float"],
+              "texts": ["X", "Y", "Z", "RX", "RY", "RZ"]
+          },
+          {
+              "types": ["string", "float[]"],
+              "texts": ["Definitions", "Coordinate"]
+          },
+          {
+              "types": ["string", "float", "float", "float", "float", "float", "float"],
+              "texts": ["Definitions", "X", "Y", "Z", "RX", "RY", "RZ"]
+          },
+          {
+              "types": ["string", "float[]", "string", "string"],
+              "texts": ["Definitions", "Coordinate", "Base", "TCP"]
+          },
+          {
+              "types": ["string", "float", "float", "float", "float", "float", "float", "string", "string"],
+              "texts": ["Definitions", "X", "Y", "Z", "RX", "RY", "RZ", "Base", "TCP"]
+          },
+          {
+              "types": ["string", "float[]", "float[]", "string", "string"],
+              "texts": ["Definitions", "Coordinate", "Joint", "Base", "TCP"]
+          },
+          {
+              "types": ["string", "float[]", "float[]"],
+              "texts": ["Definitions", "Coordinate", "Joint"]
+          },
+          {
+              "types": ["float[]", "float[]", "string", "string"],
+              "texts": ["Coordinate", "Joint", "Base", "TCP"]
+          },
+          {
+              "types": ["float[]", "float[]"],
+              "texts": ["Coordinate", "Joint"]
+          }
       ],
       "attributes": {
         "Value":"float[]",
@@ -94,15 +159,27 @@
         "TeachJoint":"float[]",
         "TeachPose":"int[]"
       },
-      "methods": {
-      }
+      "methods": {}
     },
     "TBase": {
       "description": "Use TBase Class and declare variables to create the point names and the point values. The variable name will be the point name.",
-      "constructor": [
-        "TBase <variableName> = float[]",
-        "TBase <variableName> = float, float, float, float, float, float",
-        "TBase <variableName> = string, float[]"
+      "constructors": [
+          {
+              "types": ["float[]"],
+              "texts": ["Coordinate"]
+          },
+          {
+              "types": ["float", "float", "float", "float", "float", "float"],
+              "texts": ["X", "Y", "Z", "RX", "RY", "RZ"]
+          },
+          {
+              "types": ["string", "float[]"],
+              "texts": ["Definitions", "Coordinate"]
+          },
+          {
+              "types": ["string", "float", "float", "float", "float", "float", "float"],
+              "texts": ["Definitions", "X", "Y", "Z", "RX", "RY", "RZ"]
+          }
       ],
       "attributes": {
         "Value":"float[]",
@@ -112,34 +189,73 @@
       "methods": {
         "GetValue": {
           "documentation": "Retrieve the base value",
-          "parameters": [
-            "int - Base Index"
-          ],
-          "return": "float[]"
+          "parameters": {
+              "types": ["int"],
+              "texts": ["Base Index"],
+              "return": ["float[]"]
+          }
         },
         "SetValue": {
           "documentation": "Set the base value.",
-          "parameters": [
-            "int - Base Index",
-            "float - Base Value: X(mm), Y(mm), Z(mm), RX(°), RY(°), RZ(°)"
-          ],
-          "return": "bool"
+          "parameters": {
+              "types": ["int", "float[]"],
+              "texts": ["Base Index", "Base Value"],
+              "return": ["bool"]
+          }
         },
         "ConShift": {
           "documentation": "Convert a new base value with the base value (the original base teach value) and the shift value, where the shift depends on the position and direction of the original coordinate.",
-          "parameters": [
-            "float[] - Shift Value: X(mm), Y(mm), Z(mm), RX(°), RY(°), RZ(°)"
-          ],
-          "return": "float[]"
+          "parameters": {
+              "types": ["float[]"],
+              "texts": ["Shift Value"],
+              "return": ["float[]"]
+          }
         }
       }
     },
     "TTCP": {
       "description": "Use TTCP Class and declare variables to create the point names and the point values. The variable name will be the point name.",
-      "constructor": [
-        "TTCP <variableName> = float[]",
-        "TTCP <variableName> = float[], float",
-        "TTCP <variableName> = string, float[], float"
+      "constructors": [
+          {
+              "types": ["float[]", "float"],
+              "texts": ["TCP Values", "Mass"]
+          },
+          {
+              "types": ["float[]"],
+              "texts": ["TCP Values"]
+          },
+          {
+              "types": ["float", "float", "float", "float", "float", "float", "float"],
+              "texts": ["X", "Y", "Z", "RX", "RY", "RZ", "Mass"]
+          },
+          {
+              "types": ["float", "float", "float", "float", "float", "float"],
+              "texts": ["X", "Y", "Z", "RX", "RY", "RZ"]
+          },
+          {
+              "types": ["string", "float[]", "float"],
+              "texts": ["Tool Type", "TCP Values", "Mass"]
+          },
+          {
+              "types": ["string", "float[]"],
+              "texts": ["Tool Type", "TCP Values"]
+          },
+          {
+              "types": ["string", "float", "float", "float", "float", "float", "float", "float"],
+              "texts": ["Tool Type", "X", "Y", "Z", "RX", "RY", "RZ", "Mass"]
+          },
+          {
+              "types": ["string", "float", "float", "float", "float", "float", "float"],
+              "texts": ["Tool Type", "X", "Y", "Z", "RX", "RY", "RZ"]
+          },
+          {
+              "types": ["string", "float[]", "float", "float[]", "float[]"],
+              "texts": ["Tool Type", "TCP Values", "Mass", "Inertia", "Mass Center"]
+          },
+          {
+              "types": ["float[]", "float", "float[]", "float[]"],
+              "texts": ["TCP Values", "Mass", "Inertia", "Mass Center"]
+          }
       ],
       "attributes": {
         "Value":"float[]",
@@ -151,302 +267,388 @@
         "TeachMOI":"float[]",
         "TeachMCF":"float[]"
       },
-      "methods": {
-      }
+      "methods": {}
     },
     "ModbusTCP": {
       "description": "Modbus TCP device class. Variable name becomes device name.",
-      "constructor": [
-        "ModbusTCP <variableName> = string",
-        "ModbusTCP <variableName> = string, int",
-        "ModbusTCP <variableName> = string, int, int"
+      "constructors": [
+          {
+              "types": ["string", "int", "int"],
+              "texts": ["IP", "Port", "Timeout"]
+          },
+          {
+              "types": ["string", "int"],
+              "texts": ["IP", "Port"]
+          },
+          {
+              "types": ["string"],
+              "texts": ["IP"]
+          }
       ],
       "attributes": {
       },
       "methods": {
         "Preset": {
           "documentation": "Configure preset ModbusTCP parameters.",
-          "parameters": [
-            "string - Preset name", "byte - Slave ID", "string - Signal type (DO/DI/RO/RI)", "int - Starting address", "string - Type (bool/byte/int16/int32/float/double/string)", "int - Suffix (endian or string length)"
-          ],
-          "return": "bool"
+          "parameters": {
+              "types": ["string", "byte", "string", "int", "string","int"],
+              "texts": ["Device", "Slave ID", "Signal Type", "Start Address", "Type", "Suffix"],
+              "return": ["bool"]
+          }
         },
         "IODDPreset": {
           "documentation": "Read IODD file and configure preset parameters.",
-          "parameters": [
-            "string - IODD file name", "byte - Slave ID", "int - Starting address In", "int - Starting address Out"
-          ],
-          "return": "bool"
+          "parameters": {
+              "types": ["string", "byte", "int", "int"],
+              "texts": ["Device", "Slave ID", "Start In", "Start Out"],
+              "return": ["bool"]
+          }
         }
       }
     },
     "ModbusRTU": {
       "description": "Modbus RTU device class. Variable name becomes device name.",
-      "constructor": [
-        "ModbusRTU <variableName> = string, int",
-        "ModbusRTU <variableName> = string, int, string, int, float",
-        "ModbusRTU <variableName> = string, int, string, int, float, int",
-        "ModbusRTU <variableName> = string, int, string, int, float, int, bool, bool, bool"
+      "constructors": [
+          {
+              "types": ["string", "int", "string", "int", "float", "int", "bool", "bool", "bool"],
+              "texts": ["Description", "Bits per Second", "parity check", "Data Bits", "Stop Bits", "Timeout", "DTR/DSR", "RTS/CTS", "XON/XOFF"]
+          },
+          {
+              "types": ["string", "int", "string", "int", "float", "int"],
+              "texts": ["Description", "Bits per Second", "parity check", "Data Bits", "Stop Bits", "Timeout"]
+          },
+          {
+              "types": ["string", "int", "string", "int", "float"],
+              "texts": ["Description", "Bits per Second", "parity check", "Data Bits", "Stop Bits"]
+          },
+          {
+              "types": ["string", "int"],
+              "texts": ["Description", "Bits per Second"]
+          }
       ],
-      "attributes": {
-      },
+      "attributes": {},
       "methods": {
         "Preset": {
           "documentation": "Configure preset ModbusRTU parameters.",
-          "parameters": [
-            "string - Preset name", "byte - Slave ID", "string - Signal type (DO/DI/RO/RI)", "int - Starting address", "string - Type (bool/byte/int16/int32/float/double/string)", "int - Suffix (endian or string length)"
-          ],
-          "return": "bool"
+          "parameters": {
+              "types": ["string", "byte", "string", "int", "string","int"],
+              "texts": ["Device", "Slave ID", "Signal Type", "Start Address", "Type", "Suffix"],
+              "return": ["bool"]
+          }
         },
         "IODDPreset": {
           "documentation": "Read IODD file and configure preset parameters.",
-          "parameters": [
-            "string - IODD file name", "byte - Slave ID", "int - Starting address In", "int - Starting address Out"
-          ],
-          "return": "bool"
+          "parameters": {
+              "types": ["string", "byte", "int", "int"],
+              "texts": ["Device", "Slave ID", "Start In", "Start Out"],
+              "return": ["bool"]
+          }
         }
       }
     },
     "Compliance": {
       "description": "Compliance class for robot compliance control settings and stop conditions. Provides single axis, teach, multiple axes, and impedance compliance control modes.",
-      "constructor": [
-        "Compliance <variableName>"
+      "constructors": [
+          {
+              "types": [""],
+              "texts": [""]
+          }
       ],
-      "attributes": {
-      },
+      "attributes": {},
       "methods": {
         "Reset": {
           "documentation": "Reset all the compliance control motion parameters to the default.",
-          "parameters": [],
-          "return": "void"
+          "parameters": {
+              "types": [""],
+              "texts": [""],
+              "return": ["void"]
+          }
         },
         "Frame": {
           "documentation": "Set the reference base of the compliance control motion. 1=Tool, 2=Current base.",
-          "parameters": [
-            "int - Base (1=Tool, 2=Current base)"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int"],
+              "texts": ["Base"],
+              "return": ["void"]
+          }
         },
         "HighResistance": {
           "documentation": "Set the resistance on the non-motion direction (X,Y,Z). false=Default, true=High resistance.",
-          "parameters": [
-            "bool - High resistance enabled"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["bool"],
+              "texts": ["High Resistance"],
+              "return": ["void"]
+          }
         },
         "Single": {
           "documentation": "Set the single axis parameters of compliance control motion.",
-          "parameters": [
-            "int/string - Direction (0=X, 1=Y, 2=Z, 3=RX, 4=RY, 5=RZ)", "int - Distance (mm for XYZ, degree for RXRYRZ)"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int", "int"],
+              "texts": ["Direction", "Distance"],
+              "return": ["void"]
+          }
         },
         "Teach": {
           "documentation": "Set the teach parameters of compliance control motion.",
-          "parameters": [
-            "int/string - Direction (0=Linear, 1=Rotation)", "float[]/string - 1st point", "float[]/string - 2nd point", "int - Adjustment range"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int", "float[]", "float[]", "int"],
+              "texts": ["Direction", "1st Position", "2nd Position", "Adjustment"],
+              "return": ["void"]
+          }
         },
         "Multiple": {
           "documentation": "Set the multiple axes parameters of compliance control motion.",
-          "parameters": [
-            "int/string - Direction", "bool - Enable", "int - Upper bound", "int - Lower bound"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int", "bool", "int", "int"],
+              "texts": ["Direction", "Enable", "Upper bound", "Lower bound"],
+              "return": ["void"]
+          }
         },
         "Impedance": {
           "documentation": "Set the impedance parameters of compliance control motion.",
-          "parameters": [
-            "int/string - Axes to release (0=All, 1=XYZ, 2=RXRYRZ)", "int - Rigidity level (0=Soft, 1=Intermediate, 2=Stiff)"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int", "int"],
+              "texts": ["Release Axis", "Rigidity"],
+              "return": ["void"]
+          }
         },
         "Timeout": {
           "documentation": "Set the stop condition of timeout. <0=Disable, >=0=Timeout duration in ms. Call with no params to cancel.",
-          "parameters": [
-            "int - Timeout in milliseconds"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int"],
+              "texts": ["Timeout"],
+              "return": ["void"]
+          }
         },
         "DInput": {
           "documentation": "Set the stop condition of the digital input. Call with no params to cancel.",
-          "parameters": [
-            "string - Module name (ControlBox/EndModule/ExtModuleN)", "int - Input channel", "int/string - Condition (0=L, 1=H)"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["string", "int", "int"],
+              "texts": ["Module", "Channel", "Condition"],
+              "return": ["void"]
+          }
         },
         "AInput": {
           "documentation": "Set the stop condition of the analog input. Call with no params to cancel.",
-          "parameters": [
-            "string - Module name", "int - Input channel", "int/string - Condition (0=>, 1=>=, 2===, 3=<=, 4=<)", "float - Condition value"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["string", "int", "int", "float"],
+              "texts": ["Module", "Channel", "Condition", "Condition Value"],
+              "return": ["void"]
+          }
         },
         "Condition": {
           "documentation": "Set the stop condition of the conditional expression. Call with no params to cancel.",
-          "parameters": [
-            "bool/? - Conditional expression"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["bool"],
+              "texts": ["Conditional"],
+              "return": ["void"]
+          }
         },
         "Start": {
           "documentation": "Start the compliance control motion. Returns result: 0=Not Working, 1=Working, 2=Timeout, 3=Distance reached, 4=IO triggered, 5=Resisted, 6=Error, 14=Over Speed, 201-206=Various stop conditions.",
-          "parameters": [],
-          "return": "int"
+          "parameters": {
+              "types": [""],
+              "texts": [""],
+              "return": ["int"]
+          }
         },
         "Stop": {
           "documentation": "Stop the compliance control motion. Returns result value after compliance control motion stops.",
-          "parameters": [],
-          "return": "int"
+          "parameters": {
+              "types": [""],
+              "texts": [""],
+              "return": ["int"]
+          }
         }
       }
     },
     "TouchStop": {
       "description": "TouchStop class for robot touch stop control settings and stop conditions. Supports Compliance, Line, and Force operation modes.",
-      "constructor": [
-        "TouchStop <variableName> = string",
-        "TouchStop <variableName> = string, string"
+      "constructors": [
+          {
+              "types": ["string"],
+              "texts": ["Mode"]
+          },
+          {
+              "types": ["string", "string"],
+              "texts": ["Mode", "Device"]
+          }
       ],
-      "attributes": {
-      },
+      "attributes": {},
       "methods": {
         "Reset": {
           "documentation": "Reset all the touchstop control motion parameters to the default except the operation mode and sensor device.",
-          "parameters": [],
-          "return": "void"
+          "parameters": {
+              "types": [""],
+              "texts": [""],
+              "return": ["void"]
+          }
         },
         "Frame": {
           "documentation": "Set the reference base of the touchstop control motion. 1=Tool, 2=Current base.",
-          "parameters": [
-            "int - Base (1=Tool, 2=Current base)"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int"],
+              "texts": ["Base"],
+              "return": ["void"]
+          }
         },
         "HighResistance": {
           "documentation": "Set the resistance on the non-motion direction (X,Y,Z). Valid when operation mode is Compliance.",
-          "parameters": [
-            "bool - High resistance enabled (false=Default, true=High)"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["bool"],
+              "texts": ["High Resistance"],
+              "return": ["void"]
+          }
         },
         "BrakeDistance": {
           "documentation": "Set the braking distance in mm. Valid when operation mode is Line.",
-          "parameters": [
-            "int - Braking distance in mm"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int"],
+              "texts": ["Braking Distance"],
+              "return": ["void"]
+          }
         },
         "RecordPosPoint": {
           "documentation": "Set the record touchstop coordinate value to the point name. Call with no params to cancel.",
-          "parameters": [
-            "string - Point name", "bool - Record trigger point (false=stop point, true=trigger point)"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["string", "bool"],
+              "texts": ["Point", "Record triggered"],
+              "return": ["void"]
+          }
         },
         "Single": {
           "documentation": "Set the single axis parameters of touchstop control motion.",
-          "parameters": [
-            "int/string - Direction (0-5 or X/Y/Z/RX/RY/RZ)", "int - Distance", "int - Force(N)/Speed(mm/s)", "int - Target speed/Accel time"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int", "int", "int", "int"],
+              "texts": ["Direction", "Distance", "Force", "Speed"],
+              "return": ["void"]
+          }
         },
         "Teach": {
           "documentation": "Set the teach parameters of touchstop control motion.",
-          "parameters": [
-            "int/string - Direction (0=Linear, 1=Rotation)", "float[]/string - 1st point", "float[]/string - 2nd point", "int - Adjustment range", "int - Force/Speed", "int - Target speed/Accel time"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int", "float[]", "float[]", "int", "int", "int"],
+              "texts": ["Direction", "1st Position", "2nd Position", "Adjustment", "Force", "Speed"],
+              "return": ["void"]
+          }
         },
         "AdvSet": {
           "documentation": "Set the advanced parameters of touchstop control motion. Valid when operation mode is Compliance.",
-          "parameters": [
-            "int/string - Direction", "bool - Enable", "int - Upper bound", "int - Lower bound", "int - Force", "int - Target speed"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int", "bool", "int", "int", "int", "int"],
+              "texts": ["Direction", "Enable", "Upper bound", "Lower bound", "Force", "Speed"],
+              "return": ["void"]
+          }
         },
         "Timeout": {
           "documentation": "Set the stop condition of timeout. <0=Disable, >=0=Timeout duration in ms. Call with no params to cancel.",
-          "parameters": [
-            "int - Timeout in milliseconds"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int"],
+              "texts": ["Timeout"],
+              "return": ["void"]
+          }
         },
         "DInput": {
           "documentation": "Set the stop condition of the digital input. Can also set stroke ratio for Compliance mode. Call with no params to cancel.",
-          "parameters": [
-            "string - Module name (ControlBox/EndModule/ExtModuleN)", "int - Input channel", "int/string - Condition (0=L, 1=H)"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["string", "int", "int"],
+              "texts": ["Module", "Channel", "Condition"],
+              "return": ["void"]
+          }
         },
         "AInput": {
           "documentation": "Set the stop condition of the analog input. Call with no params to cancel.",
-          "parameters": [
-            "string - Module name", "int - Input channel", "int/string - Condition (0=>, 1=>=, 2===, 3=<=, 4=<)", "float - Condition value"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["string", "int", "int", "float"],
+              "texts": ["Module", "Channel", "Condition", "Condition Value"],
+              "return": ["void"]
+          }
         },
         "Condition": {
           "documentation": "Set the stop condition of the conditional expression. Call with no params to cancel.",
-          "parameters": [
-            "bool/? - Conditional expression"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["bool"],
+              "texts": ["Conditional"],
+              "return": ["void"]
+          }
         },
         "Resisted": {
           "documentation": "Set the stop condition of external resistance detection. Valid when operation mode is Compliance. Call with no params to cancel.",
-          "parameters": [
-            "bool - Enable external resistance detection"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["bool"],
+              "texts": ["Enable"],
+              "return": ["void"]
+          }
         },
         "FTReached": {
           "documentation": "Set the stop condition of monitoring force/torque values. Valid when operation mode is Force. Call with no params to cancel.",
-          "parameters": [
-            "int/string - Force type (6=F3D, 7=T3D, 8=Force)", "bool - Enable", "float - Monitoring value"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int", "bool", "float"],
+              "texts": ["Force Type", "Enable", "Monitoring Value"],
+              "return": ["void"]
+          }
         },
         "Start": {
           "documentation": "Start the touchstop control motion. Returns result: 0=Not Working, 1=Working, 2=Timeout, 3=Distance reached, 4=IO triggered, 5=Resisted, 6=Error, 14=Over Speed, 201-206=Various stop conditions.",
-          "parameters": [
-            "bool - Zero out force sensor before execution (for Force mode)"
-          ],
-          "return": "int"
+          "parameters": {
+              "types": ["bool"],
+              "texts": ["Zero Sensor"],
+              "return": ["int"]
+          }
         },
         "Stop": {
           "documentation": "Stop the touchstop control motion. Returns result value after touchstop control motion stops.",
-          "parameters": [],
-          "return": "int"
+          "parameters": {
+              "types": [""],
+              "texts": [""],
+              "return": ["int"]
+          }
         },
         "GetStoppedPos": {
           "documentation": "Get the stopped position values after the robot touch-stopped. Returns float[] of coordinates or joint angles.",
-          "parameters": [
-            "int - Coordinate type (0=flange by current base, 1=joint angle, 2=TCP by current base, 3=TCP by RobotBase, 4=end TCP by RobotBase)"
-          ],
-          "return": "float[]"
+          "parameters": {
+              "types": ["int"],
+              "texts": ["Coordinate Type"],
+              "return": ["float[]"]
+          }
         },
         "GetTriggeredPos": {
           "documentation": "Get the triggered position values after the robot touch-stopped. Returns float[] of coordinates or joint angles.",
-          "parameters": [
-            "int - Coordinate type (0=flange by current base, 1=joint angle, 2=TCP by current base, 3=TCP by RobotBase, 4=end TCP by RobotBase)"
-          ],
-          "return": "float[]"
+          "parameters": {
+              "types": ["int"],
+              "texts": ["Coordinate Type"],
+              "return": ["float[]"]
+          }
         },
         "GetMovingDistance": {
           "documentation": "Get the moving distance of the touchstop motion in mm.",
-          "parameters": [],
-          "return": "float"
+          "parameters": {
+              "types": [""],
+              "texts": [""],
+              "return": ["float"]
+          }
         }
       }
     },
     "FTSensor": {
       "description": "FTSensor class for Force Torque Sensor device. Supports TMFT300, OnRobot_HEX-E/H, ROBOTIQ_FT300, SCHUNK_Axia80, SRI_M4313N3C, WACOH sensors.",
-      "constructor": [
-        "FTSensor <variableName> = string",
-        "FTSensor <variableName> = string, string",
-        "FTSensor <variableName> = string, float[], float[], float",
-        "FTSensor <variableName> = string, string, float[], float[], float"
+      "constructors": [
+          {
+              "types": ["string", "string", "float[]", "float[]", "float"],
+              "texts": ["Model", "Connection", "Position", "TCP Values", "Tool Mass"]
+          },
+          {
+              "types": ["string", "float[]", "float[]", "float"],
+              "texts": ["Model", "Position", "TCP Values", "Tool Mass"]
+          },
+          {
+              "types": ["string", "string"],
+              "texts": ["Model", "Connection"]
+          },
+          {
+              "types": ["string"],
+              "texts": ["Model"]
+          }
       ],
       "attributes": {
         "X": { "type": "float", "mode": "R", "description": "The strength value of the X axis" },
@@ -476,117 +678,144 @@
       "methods": {
         "Open": {
           "documentation": "Open the connection to the Force Torque Sensor. Returns true on success, false on failure.",
-          "parameters": [],
-          "return": "bool"
+          "parameters": {
+              "types": [""],
+              "texts": [""],
+              "return": ["bool"]
+          }
         },
         "Close": {
           "documentation": "Close the connection from the Force Torque Sensor. Returns true on success, false on failure.",
-          "parameters": [],
-          "return": "bool"
+          "parameters": {
+              "types": [""],
+              "texts": [""],
+              "return": ["bool"]
+          }
         }
       }
     },
     "Force": {
       "description": "Force class for robot force control settings and motions. Used with FTSensor for force/torque-based control.",
-      "constructor": [
-        "Force <variableName> = string"
+      "constructors": [
+          {
+              "types": ["string"],
+              "texts": ["Model"]
+          }
       ],
       "attributes": {
       },
       "methods": {
         "Reset": {
           "documentation": "Reset all the force control motion parameters to the default except the sensor name.",
-          "parameters": [],
-          "return": "void"
+          "parameters": {
+              "types": [""],
+              "texts": [""],
+              "return": ["void"]
+          }
         },
         "Frame": {
           "documentation": "Set the reference base of the force control motion. 0=Robot base, 1=Tool (default), 2=Current base, 3=Trajectory.",
-          "parameters": [
-            "int - Base (0=Robot base, 1=Tool, 2=Current base, 3=Trajectory)"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int"],
+              "texts": ["Base"],
+              "return": ["void"]
+          }
         },
         "Distance": {
           "documentation": "Set the moving distance of the force control motion in mm. Available only in SetPoint F/T operation mode. <0=No limit, >=0=Limited distance.",
-          "parameters": [
-            "int - Distance in mm"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int"],
+              "texts": ["Distance"],
+              "return": ["void"]
+          }
         },
         "ProtectionSpeed": {
           "documentation": "Set the speed protection of the force control motion against axial force or torque.",
-          "parameters": [
-            "int - X (mm/s)", "int - Y (mm/s)", "int - Z (mm/s)", "int - RX (deg/s)", "int - RY (deg/s)", "int - RZ (deg/s)"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int", "int", "int", "int", "int", "int"],
+              "texts": ["X", "Y", "Z", "RX", "RY", "RZ"],
+              "return": ["void"]
+          }
         },
         "FTSet": {
           "documentation": "Set the force and torque of the force control motion. Positive/negative values denote force control direction. Can adjust PID control parameters.",
-          "parameters": [
-            "int/string - Axis (0-5 or FX/FY/FZ/TX/TY/TZ)", "bool - Enable", "float - Control value", "int - PID (0-4)", "int - Speed protection"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int", "bool", "float", "int", "int"],
+              "texts": ["Axis", "Enable", "Control Value", "PID", "Speed"],
+              "return": ["void"]
+          }
         },
         "Trajectory": {
           "documentation": "Set the trajectory path of the force control motion. Trajectory F/T operation mode. Use subflow name or customized function.",
-          "parameters": [
-            "string/? - Subflow name or trajectory path function"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["string"],
+              "texts": ["Subflow name"],
+              "return": ["void"]
+          }
         },
         "Timeout": {
           "documentation": "Set the stop condition of timeout in milliseconds. Available only in SetPoint F/T operation mode. <0=Disable, >=0=Timeout duration. Call with no params to cancel.",
-          "parameters": [
-            "int - Timeout in milliseconds"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int"],
+              "texts": ["Timeout"],
+              "return": ["void"]
+          }
         },
         "AllowPosTol": {
           "documentation": "Set the stop condition of tolerant position error in mm. <0=Disable, >=0=Distance of tolerant error. Call with no params to cancel.",
-          "parameters": [
-            "int - Error distance in mm"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int"],
+              "texts": ["Error Distance"],
+              "return": ["void"]
+          }
         },
         "DInput": {
           "documentation": "Set the stop condition of the digital input. Call with no params to cancel.",
-          "parameters": [
-            "string - Module name (ControlBox/EndModule/ExtModuleN)", "int - Input channel", "int/string - Condition (0=L, 1=H)"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["string", "int", "int"],
+              "texts": ["Module", "Channel", "Condition"],
+              "return": ["void"]
+          }
         },
         "AInput": {
           "documentation": "Set the stop condition of the analog input. Call with no params to cancel.",
-          "parameters": [
-            "string - Module name", "int - Input channel", "int/string - Condition (0=>, 1=>=, 2===, 3=<=, 4=<)", "float - Condition value"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["string", "int", "int", "float"],
+              "texts": ["Module", "Channel", "Condition", "Condition Value"],
+              "return": ["void"]
+          }
         },
         "FTReached": {
           "documentation": "Set the stop condition of monitoring force/torque values. Call with no params to cancel.",
-          "parameters": [
-            "int/string - Force type (0-7 or FX/FY/FZ/TX/TY/TZ/F3D/T3D)", "bool - Enable", "float - Monitoring value"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["int", "bool", "float"],
+              "texts": ["Force Type", "Enable", "Monitoring Value"],
+              "return": ["void"]
+          }
         },
         "Condition": {
           "documentation": "Set the stop condition of the conditional expression. Call with no params to cancel.",
-          "parameters": [
-            "bool/? - Conditional expression"
-          ],
-          "return": "void"
+          "parameters": {
+              "types": ["bool"],
+              "texts": ["Conditional"],
+              "return": ["void"]
+          }
         },
         "Start": {
           "documentation": "Start the force control motion. Returns result: 0=Not Working, 1=Working, 2=Timeout, 3=Distance reached, 4=IO triggered, 5=Resisted, 6=Error, 14=Over Speed, 201-206=Various stop conditions.",
-          "parameters": [
-            "bool - Zero out force sensor before execution (default true)", "bool - Enable tool gravity compensation (default false)"
-          ],
-          "return": "int"
+          "parameters": {
+              "types": ["bool", "bool"],
+              "texts": ["Zero Sensor", "Enable gravity"],
+              "return": ["int"]
+          }
         },
         "Stop": {
           "documentation": "Stop the force control motion. Returns result value after force control motion stops.",
-          "parameters": [],
-          "return": "int"
+          "parameters": {
+              "types": [""],
+              "texts": [""],
+              "return": ["int"]
+          }
         }
       }
     }

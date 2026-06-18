@@ -20,7 +20,6 @@ class ScriptFunctionHandler:
             base_path = Path(getattr(sys, "_MEIPASS", Path(__file__).parent), "assets")
         else:
             base_path = Path(__file__).parent.parent / "assets"
-
         return base_path
 
 
@@ -30,7 +29,6 @@ class ScriptFunctionHandler:
 
 
     def get_script_functions_completion(self) -> list[types.CompletionItem]:
-
         self._script_functions = [types.CompletionItem(
                             label=function_name,
                             kind=types.CompletionItemKind.Function,
@@ -42,13 +40,11 @@ class ScriptFunctionHandler:
                             sort_text=f"{function_data.get('category', '')}_{function_name.lower()}"
                             ) for function_name, function_data in self._data.items()
                         ]
-
         return self._script_functions
         
 
     def get_fitting_return_script_functions(self, script_type: str) -> list[types.CompletionItem]:
         fitting_functions: list[types.CompletionItem] = []
-
         for function_name, function_data in self._data.items():
             if script_type in function_data.get("return", []) or "any" in function_data.get("return", []) or "any[]" in function_data.get("return", []):
                 fitting_functions += [types.CompletionItem(
@@ -62,12 +58,10 @@ class ScriptFunctionHandler:
                             sort_text=f"{function_data.get('category', '')}_{function_name.lower()}"
                             ) 
                         ]
-
         return fitting_functions
 
 
     def get_valid_return_function(self, func_name: str, func_type: str) -> tuple[bool,str]:
-
         valid_return = False
         return_type = ""
 
@@ -93,7 +87,6 @@ class ScriptFunctionHandler:
                     return_type = func_return_val[0]
 
                     return valid_return, return_type
-
         return valid_return, return_type
 
 

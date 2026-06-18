@@ -31,7 +31,7 @@ def completions(ls: LanguageServer, params: types.CompletionParams):
 
     rules = [
             completion_rules.rule_return_variable_type,
-            completion_rules.rule_script_classes
+            completion_rules.rule_scriptclass_method_completions
             ]
 
     for rule in rules:
@@ -44,7 +44,7 @@ def completions(ls: LanguageServer, params: types.CompletionParams):
     items += scriptfunctionhandler.get_script_functions_completion()
     items += scripttypehandler.get_script_types_completion()
     items += userdefinedvariables.get_all_user_defined_variables(document)
-    items += scriptmethodhandler.get_scriptclasses()
+    items += scriptmethodhandler.get_scriptclass_completions()
 
     return types.CompletionList(
         is_incomplete=False,

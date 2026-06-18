@@ -3,6 +3,7 @@ from src.server.user_types.user_variables import UserDefinedVarialbes
 from src.server.completion_rules import CompletionRules
 from src.server.user_types.script_functions import ScriptFunctionHandler
 from src.server.user_types.keywords import KeywordHandler
+from src.server.user_types.script_methods import ScriptMethodHandler
 from pprint import pprint
 
 class TestDocument:
@@ -17,8 +18,9 @@ def debug_completion_full_flow(before_cursor: str, document_text: str) -> None:
 	user_vars = UserDefinedVarialbes(handler)
 	keywordhandler = KeywordHandler()
 	document = TestDocument(document_text)
+	scriptmethodhandler = ScriptMethodHandler()
 	
-	completion_rules = CompletionRules(handler, script_func_handler, user_vars)
+	completion_rules = CompletionRules(handler, script_func_handler, user_vars, scriptmethodhandler)
 	
 	print(f"\n=== Full Completion Flow Debug ===")
 	print(f"Document:\n{document_text}\n")
@@ -53,10 +55,10 @@ def debug_completion_full_flow(before_cursor: str, document_text: str) -> None:
 
 
 document_text = """
-string test
-string test2 = String_ToUpper() + ""
+Socket test = "test"
+test.
 """.strip()
 
-before_cursor = "string test2 = "
+before_cursor = "test."
 
 debug_completion_full_flow(before_cursor, document_text)

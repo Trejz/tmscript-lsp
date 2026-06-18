@@ -63,10 +63,40 @@ class CompletionRules:
         return None
 
 
-    def rule_script_classes(self, before_cursor: str, document) -> types.CompletionList | None:
-        items = self._scriptmehtodhandler.get_member_completions(before_cursor, document)
+    def rule_scriptclass_method_completions(self, before_cursor: str, document) -> types.CompletionList | None:
+        script_classes = self._scriptmehtodhandler.get_script_classes()
+        items = []
+        regex_match = re.search(r'(\w+)\.', before_cursor)
 
-        if not items:
+        if not regex_match:
+            return None
+
+        current_var = regex_match.group(1)
+        user_vars = self._scriptmehtodhandler.collect_classes(document)
+
+        if current_var in user_vars:
+            var_class = user_vars[current_var].get("class_type")
+        else:
+            return None
+
+        for class_name, class_values in script_classes.items():
+            if not class_name == var_class:
+                continue
+
+            for method_name, method_val in class_values.get("methods").items():
+                items.extend([types.CompletionItem(
+                            label=method_name,
+                            kind=types.CompletionItemKind.Function,
+                            detail=f"{class_name} Class Method",
+                            documentation=types.MarkupContent(
+                                kind=types.MarkupKind.Markdown,
+                                value=method_val.get("documentation", "")
+                                ),
+                            sort_text=f"{method_name}_{method_name}"
+                            ) 
+                        ])
+
+        if items == []:
             return None
 
         return types.CompletionList(

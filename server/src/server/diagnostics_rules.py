@@ -3,6 +3,7 @@ from lsprotocol import types
 from typing import TYPE_CHECKING
 
 from src.server.enums.enums import VarTypeEnum
+from src.server.diagnostics.scriptsclasses_diagnostics import ScriptClassDiagnostics
 
 if TYPE_CHECKING:
     from src.server.user_types.script_functions import ScriptFunctionHandler
@@ -17,12 +18,12 @@ class DiagnositcRules:
                  scripttypehandler: "ScriptTypeHandler",
                  scriptmethodhandler: "ScriptMethodHandler") -> None:
 
-        self._source: str = "tmscript-lsp"
         self._scriptfunctionhandler: "ScriptFunctionHandler" = scriptfunctionhandler
         self._userdefinedvariables: "UserDefinedVarialbes" = userdefinedvariables
         self._scripttypehandler: "ScriptTypeHandler" = scripttypehandler
         self._scriptmethodhandler: "ScriptMethodHandler" = scriptmethodhandler
         
+        self._source: str = "tmscript-lsp"
         self._diagnostics: list[types.Diagnostic] = []
         self._user_vars: dict[str,dict[str,str]] = {}
         self._diag_pos_start: types.Position = types.Position(line=0,character=0)
@@ -41,6 +42,7 @@ class DiagnositcRules:
 
     def var_value_assignmenet(self, document) -> list[types.Diagnostic]:
         self._diagnostics: list[types.Diagnostic] = []
+        self._user_vars = self._userdefinedvariables.collect_variables(document)
 
         #regex_var_declaration = re.compile(r"^\s*(?:(\w+(?:\[])?)\s+)?(\w+)\s*(?:=\s*(.*))?$")
         types_regex = "|".join(map(re.escape, self._scripttypehandler.get_script_types()))
@@ -50,6 +52,25 @@ class DiagnositcRules:
 
         for line_num, line in enumerate(document.lines):
             line = line.lstrip("\ufeff").rstrip("\r\n")
+
+            eq_pos = line.find("=") if "=" in line else len(line.rstrip()) - 1
+            self._diag_pos_start = types.Position(line=line_num,character=max(0, eq_pos))
+            self._diag_pos_end = types.Position(line=line_num, character=len(line))
+
+            script_class_diagnostics = ScriptClassDiagnostics(
+                source=self._source,
+                diag_pos_start=self._diag_pos_start,
+                diag_pos_end=self._diag_pos_end,
+                scriptmethodhandler=self._scriptmethodhandler,
+                line=line,
+                linenum=line_num,
+                user_vars=self._user_vars,
+            )
+            class_constructor_diagnostics = script_class_diagnostics.check_class_constructor()
+            if class_constructor_diagnostics is not None:
+                self._diagnostics.extend(class_constructor_diagnostics)
+                continue
+
             regex_defmatch = definition_match.match(line)
             regex_assignmatch = assignment_match.match(line)
             
@@ -65,12 +86,6 @@ class DiagnositcRules:
             else:
                 continue
 
-
-            self._user_vars = self._userdefinedvariables.collect_variables(document)
-
-            eq_pos = line.find("=") if "=" in line else len(line.rstrip()) - 1
-            self._diag_pos_start = types.Position(line=line_num,character=max(0, eq_pos))
-            self._diag_pos_end = types.Position(line=line_num, character=len(line))
 
             # Check if type Keyword is correct
             if var_type is not None and var_name is not None: 
@@ -217,7 +232,6 @@ class DiagnositcRules:
                 self._add_diagnostic(message)
 
 
-
     def _check_int_byte_variable_assignment(self, value: str, var_type: str) -> None:
         #Check for Valid int
         value_int: int
@@ -284,6 +298,7 @@ class DiagnositcRules:
 
                 if isinstance(value_int, int):
                     return
+
 
     def _check_float_double_variable_assignment(self, value: str, var_type: str) -> None:
         #Check for Valid int

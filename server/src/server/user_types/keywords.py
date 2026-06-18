@@ -19,7 +19,6 @@ class KeywordHandler:
             base_path = Path(getattr(sys, "_MEIPASS", Path(__file__).parent), "assets")
         else:
             base_path = Path(__file__).parent.parent / "assets"
-
         return base_path
 
 
@@ -29,11 +28,9 @@ class KeywordHandler:
 
 
     def get_keywords_completion(self) -> list[types.CompletionItem]:
-
         self._keywords = [types.CompletionItem(
                             label=keyword,
                             kind=types.CompletionItemKind.Keyword
                             ) for keyword in self._data
                         ]
-
         return self._keywords

@@ -36,7 +36,8 @@ def debug_diagnostics(document_text: str) -> None:
 
 # ============ EDIT THIS SECTION TO DEBUG ============
 document_text = """
-string[] test = {
+Socket test = "test"
+test.
 """.strip()
 
 debug_diagnostics(document_text)
