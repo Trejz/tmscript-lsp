@@ -31,13 +31,22 @@ def completions(ls: LanguageServer, params: types.CompletionParams):
 
     rules = [
             completion_rules.rule_return_variable_type,
-            completion_rules.rule_scriptclass_method_completions
+            completion_rules.rule_scriptclass_method_completions,
+            completion_rules.rule_scriptclass_attributes_completions
             ]
+
+    all_items: list = []
 
     for rule in rules:
         result = rule(before_cursor, document)
-        if result:
-            return result
+        if result is not None:
+            all_items.extend(result.items)
+
+    if all_items:
+        return types.CompletionList(
+            is_incomplete=False,
+            items=all_items,
+        )
 
     # Fallback Completions
     items = keywordhandler.get_keywords_completion()

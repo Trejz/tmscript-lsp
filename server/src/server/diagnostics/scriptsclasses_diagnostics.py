@@ -7,16 +7,15 @@ if TYPE_CHECKING:
 
 
 class ScriptClassDiagnostics:
-    def __init__(
-        self,
-        source: str,
-        diag_pos_start,
-        diag_pos_end,
-        scriptmethodhandler,
-        line,
-        linenum,
-        user_vars: dict[str, dict[str, str]] | None = None,
-    ) -> None:
+    def __init__(self,
+                 source: str,
+                 diag_pos_start,
+                 diag_pos_end,
+                 scriptmethodhandler,
+                 line,
+                 linenum, 
+                 user_vars: dict[str, dict[str, str]] | None = None) -> None:
+
         self._diagnostics: list[types.Diagnostic] = []
         self._diag_pos_start = diag_pos_start
         self._diag_pos_end = diag_pos_end

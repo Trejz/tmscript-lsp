@@ -3,7 +3,6 @@ from pathlib import Path
 from lsprotocol import types
 import sys
 import re
-from typing import Any
 
 
 class ScriptMethodHandler:
@@ -90,10 +89,6 @@ class ScriptMethodHandler:
         return items
 
 
-    def get_scriptclass_method_completion(self):
-        raise NotImplementedError
-
-
     def collect_classes(self, document) -> dict:
         classes_regex = "|".join(map(re.escape, self._scriptclasses))
 
@@ -114,10 +109,5 @@ class ScriptMethodHandler:
 
                 user_classes[class_name] = {"class_type": class_type,
                                             "class_value": class_value if class_value is not None else "None"}
-
                 continue
-        
         return user_classes
-
-
-

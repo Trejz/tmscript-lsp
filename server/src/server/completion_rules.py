@@ -83,7 +83,7 @@ class CompletionRules:
             if not class_name == var_class:
                 continue
 
-            for method_name, method_val in class_values.get("methods").items():
+            for method_name, method_val in class_values.get("methods", {}).items():
                 items.extend([types.CompletionItem(
                             label=method_name,
                             kind=types.CompletionItemKind.Function,
@@ -92,15 +92,58 @@ class CompletionRules:
                                 kind=types.MarkupKind.Markdown,
                                 value=method_val.get("documentation", "")
                                 ),
-                            sort_text=f"{method_name}_{method_name}"
+                            sort_text=f"method_{method_name}"
                             ) 
                         ])
 
-        if items == []:
+        if not items:
             return None
 
         return types.CompletionList(
                 is_incomplete=False,
                 items = items
                 )
+        
+
+    def rule_scriptclass_attributes_completions(self, before_cursor, document) -> types.CompletionList | None:
+        script_classes = self._scriptmehtodhandler.get_script_classes()
+        items = []
+        regex_match = re.search(r'(\w+)\.', before_cursor)
+
+        if not regex_match:
+            return None
+
+        current_var = regex_match.group(1)
+        user_vars = self._scriptmehtodhandler.collect_classes(document)
+
+        if current_var in user_vars:
+            var_class = user_vars[current_var].get("class_type")
+        else:
+            return None
+
+        for class_name, class_values in script_classes.items():
+            if not class_name == var_class:
+                continue
+
+            for attribute_name, attribute_val in class_values.get("attributes", {}).items():
+                items.extend([types.CompletionItem(
+                            label=attribute_name,
+                            kind=types.CompletionItemKind.Value,
+                            detail=f"{class_name} Class Attribute",
+                            documentation=types.MarkupContent(
+                                kind=types.MarkupKind.Markdown,
+                                value=attribute_val.get("description", "")
+                                ),
+                            sort_text=f"attribute_{attribute_name}"
+                            ) 
+                        ])
+
+        if not items:
+            return None
+
+        return types.CompletionList(
+                is_incomplete=False,
+                items = items
+                )
+
 

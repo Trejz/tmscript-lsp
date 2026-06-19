@@ -38,7 +38,7 @@
       "attributes": {},
       "methods": {}
     },
-    "MDesicion": {
+    "MDecision": {
       "description": "Use the MDecision class with variable declaration to allow users to configure M-Decision nodes for conditional judgments or to display pop-up messages.",
       "constructors": [{
           "types": ["string", "string"],
@@ -149,15 +149,51 @@
           }
       ],
       "attributes": {
-        "Value":"float[]",
-        "Joint":"float[]",
-        "Pose":"int[]",
-        "Flange":"float[]",
-        "BaseName":"string",
-        "TCPName":"string",
-        "TeachValue":"float[]",
-        "TeachJoint":"float[]",
-        "TeachPose":"int[]"
+        "Value": {
+            "description": "Point coordinate",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "Joint": {
+            "description": "Joint angles",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "Pose": {
+            "description": "Robot Pose",
+            "mode": "R/W",
+            "return": "int[]"
+        },
+        "Flange": {
+            "description": "Flange Center Coordinates",
+            "mode": "R",
+            "return": "float[]"
+        },
+        "BaseName": {
+            "description": "Base Name",
+            "mode": "R",
+            "return": "string"
+        },
+        "TCPName": {
+            "description": "TCP Name",
+            "mode": "R",
+            "return": "string"
+        },
+        "TeachValue": {
+            "description": "Joint angles",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "TeachJoint": {
+            "description": "Joint angles",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "TeachPose": {
+            "description": "Joint angles",
+            "mode": "R/W",
+            "return": "float[]"
+        }
       },
       "methods": {}
     },
@@ -182,9 +218,21 @@
           }
       ],
       "attributes": {
-        "Value":"float[]",
-        "Type":"string",
-        "TeachValue":"int[]"
+        "Value": {
+            "description": "Joint angles",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "Type": {
+            "description": "Joint angles",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "TeachValue": {
+            "description": "Joint angles",
+            "mode": "R/W",
+            "return": "float[]"
+        }
       },
       "methods": {
         "GetValue": {
@@ -258,14 +306,46 @@
           }
       ],
       "attributes": {
-        "Value":"float[]",
-        "Mass":"float",
-        "MOI":"float[]",
-        "MCF":"float[]",
-        "TeachValue":"float[]",
-        "TeachMass":"float",
-        "TeachMOI":"float[]",
-        "TeachMCF":"float[]"
+        "Value": {
+            "description": "TCP value",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "Mass": {
+            "description": "Mass",
+            "mode": "R/W",
+            "return": "float"
+        },
+        "MOI": {
+            "description": "Principal Moments of Inertia",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "MCF": {
+            "description": "Mass center frame",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "TeachValue": {
+            "description": "TCP Values",
+            "mode": "R",
+            "return": "float[]"
+        },
+        "TeachMass": {
+            "description": "Mass",
+            "mode": "R",
+            "return": "float"
+        },
+        "TeachMOI": {
+            "description": "Principal Moments of Inertia",
+            "mode": "R",
+            "return": "float[]"
+        },
+        "TeachMCF": {
+            "description": "Mass center frame",
+            "mode": "R",
+            "return": "float[]"
+        }
       },
       "methods": {}
     },
@@ -285,8 +365,7 @@
               "texts": ["IP"]
           }
       ],
-      "attributes": {
-      },
+      "attributes": {},
       "methods": {
         "Preset": {
           "documentation": "Configure preset ModbusTCP parameters.",
@@ -651,29 +730,121 @@
           }
       ],
       "attributes": {
-        "X": { "type": "float", "mode": "R", "description": "The strength value of the X axis" },
-        "Y": { "type": "float", "mode": "R", "description": "The strength value of the Y axis" },
-        "Z": { "type": "float", "mode": "R", "description": "The strength value of the Z axis" },
-        "TX": { "type": "float", "mode": "R", "description": "The torque value of the X axis" },
-        "TY": { "type": "float", "mode": "R", "description": "The torque value of the Y axis" },
-        "TZ": { "type": "float", "mode": "R", "description": "The torque value of the Z axis" },
-        "F3D": { "type": "float", "mode": "R", "description": "The XYZ force strength value" },
-        "T3D": { "type": "float", "mode": "R", "description": "The XYZ torque value" },
-        "Value": { "type": "float[]", "mode": "R", "description": "The XYZ force strength value and torque value array {X, Y, Z, TX, TY, TZ}, Size = 6" },
-        "ForceValue": { "type": "float[]", "mode": "R", "description": "The XYZ force strength value array {X, Y, Z}, Size = 3" },
-        "TorqueValue": { "type": "float[]", "mode": "R", "description": "The XYZ torque value array {TX, TY, TZ}, Size = 3" },
-        "RefCoordX": { "type": "float", "mode": "R", "description": "The X-axis strength value measured based on the reference base set in the node" },
-        "RefCoordY": { "type": "float", "mode": "R", "description": "The Y-axis strength value measured based on the reference base set in the node" },
-        "RefCoordZ": { "type": "float", "mode": "R", "description": "The Z-axis strength value measured based on the reference base set in the node" },
-        "RefCoordTX": { "type": "float", "mode": "R", "description": "The X-axis torque value measured based on the reference base set in the node" },
-        "RefCoordTY": { "type": "float", "mode": "R", "description": "The Y-axis torque value measured based on the reference base set in the node" },
-        "RefCoordTZ": { "type": "float", "mode": "R", "description": "The Z-axis torque value measured based on the reference base set in the node" },
-        "RefCoordF3D": { "type": "float", "mode": "R", "description": "The XYZ strength measured based on the reference base set in the node" },
-        "RefCoordT3D": { "type": "float", "mode": "R", "description": "The XYZ torque measured based on the reference base set in the node" },
-        "RefCoordForceValue": { "type": "float[]", "mode": "R", "description": "The XYZ strength value matrix measured based on the reference base {RefCoordX, RefCoordY, RefCoordZ}, Size = 3" },
-        "RefCoordTorqueValue": { "type": "float[]", "mode": "R", "description": "The XYZ torque value matrix measured based on the reference base {RefCoordTX, RefCoordTY, RefCoordTZ}, Size = 3" },
-        "Model": { "type": "string", "mode": "R", "description": "The Model name of the F/T sensor" },
-        "Zero": { "type": "byte", "mode": "R/W", "description": "Turn on or off F/T sensor offset. 0=Zero OFF, 1=Zero ON" }
+        "X": {
+            "description": "The strength value",
+            "mode": "R",
+            "return": "float"
+        },
+        "Y": {
+            "description": "The strength value",
+            "mode": "R",
+            "return": "float"
+        },
+        "Z": {
+            "description": "The strength value",
+            "mode": "R",
+            "return": "float"
+        },
+        "TX": {
+            "description": "The strength value",
+            "mode": "R",
+            "return": "float"
+        },
+        "TY": {
+            "description": "The strength value",
+            "mode": "R",
+            "return": "float"
+        },
+        "TZ": {
+            "description": "The strength value",
+            "mode": "R",
+            "return": "float"
+        },
+        "F3D": {
+            "description": "XYZ force strength",
+            "mode": "R",
+            "return": "float"
+        },
+        "T3D": {
+            "description": "XYZ torque",
+            "mode": "R",
+            "return": "float"
+        },
+        "Value": {
+            "description": "XYZ force strength",
+            "mode": "R",
+            "return": "float[]"
+        },
+        "ForceValue": {
+            "description": "XYZ force strength",
+            "mode": "R",
+            "return": "float[]"
+        },
+        "TorqueValue": {
+            "description": "XYZ torque",
+            "mode": "R",
+            "return": "float[]"
+        },
+        "RefCoordX": {
+            "description": "X-axis strength value",
+            "mode": "R",
+            "return": "float"
+        },
+        "RefCoordY": {
+            "description": "Y-axis strength value",
+            "mode": "R",
+            "return": "float"
+        },
+        "RefCoordZ": {
+            "description": "Z-axis strength value",
+            "mode": "R",
+            "return": "float"
+        },
+        "RefCoordTX": {
+            "description": "X-axis strength value",
+            "mode": "R",
+            "return": "float"
+        },
+        "RefCoordTY": {
+            "description": "Y-axis strength value",
+            "mode": "R",
+            "return": "float"
+        },
+        "RefCoordTZ": {
+            "description": "Z-axis strength value",
+            "mode": "R",
+            "return": "float"
+        },
+        "RefCoordF3D": {
+            "description": "XYZ strength",
+            "mode": "R",
+            "return": "float"
+        },
+        "RefCoordT3D": {
+            "description": "XYZ torque",
+            "mode": "R",
+            "return": "float"
+        },
+        "RefCoordForceValue": {
+            "description": "XYZ force strength",
+            "mode": "R",
+            "return": "float[]"
+        },
+        "RefCoordTorqueValue": {
+            "description": "XYZ torque",
+            "mode": "R",
+            "return": "float[]"
+        },
+        "Model": {
+            "description": "Model name",
+            "mode": "R",
+            "return": "string"
+        },
+        "Zero": {
+            "description": "Enable Offset",
+            "mode": "R/W",
+            "return": "byte"
+        }
       },
       "methods": {
         "Open": {
@@ -702,8 +873,7 @@
               "texts": ["Model"]
           }
       ],
-      "attributes": {
-      },
+      "attributes": {},
       "methods": {
         "Reset": {
           "documentation": "Reset all the force control motion parameters to the default except the sensor name.",
