@@ -28,19 +28,22 @@ def completions(ls: LanguageServer, params: types.CompletionParams):
 
     line: str = document.lines[params.position.line]
     before_cursor: str = line[:params.position.character]
-
-    rules = [
-            completion_rules.rule_return_variable_type,
-            completion_rules.rule_scriptclass_method_completions,
-            completion_rules.rule_scriptclass_attributes_completions
-            ]
-
     all_items: list = []
 
-    for rule in rules:
-        result = rule(before_cursor, document)
-        if result is not None:
-            all_items.extend(result.items)
+    result_methods = completion_rules.rule_scriptclass_method_completions(before_cursor,document)
+    if result_methods is not None:
+        all_items.extend(result_methods.items)
+    result_class_attributes = completion_rules.rule_scriptclass_attributes_completions(before_cursor,document)
+    if result_class_attributes is not None:
+        all_items.extend(result_class_attributes.items)
+    result_object_attributes = completion_rules.rule_parametrizedobject_attributes(before_cursor,document)
+    if result_object_attributes is not None:
+        all_items.extend(result_object_attributes.items)
+    result_var_return = completion_rules.rule_return_variable_type(before_cursor,document)
+    if result_var_return is not None and (
+            result_object_attributes is None and
+            result_class_attributes is None):
+        all_items.extend(result_var_return.items)
 
     if all_items:
         return types.CompletionList(

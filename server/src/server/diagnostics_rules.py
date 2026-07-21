@@ -28,6 +28,7 @@ class DiagnositcRules:
         self._user_vars: dict[str,dict[str,str]] = {}
         self._diag_pos_start: types.Position = types.Position(line=0,character=0)
         self._diag_pos_end: types.Position = types.Position(line=0,character=0)
+        self._document = None
 
 
     def _add_diagnostic(self, message: str, severity = types.DiagnosticSeverity.Error):
@@ -43,6 +44,7 @@ class DiagnositcRules:
     def var_value_assignmenet(self, document) -> list[types.Diagnostic]:
         self._diagnostics: list[types.Diagnostic] = []
         self._user_vars = self._userdefinedvariables.collect_variables(document)
+        self._document = document
 
         #regex_var_declaration = re.compile(r"^\s*(?:(\w+(?:\[])?)\s+)?(\w+)\s*(?:=\s*(.*))?$")
         types_regex = "|".join(map(re.escape, self._scripttypehandler.get_script_types()))
@@ -108,35 +110,35 @@ class DiagnositcRules:
 
             # Match to var_type
             match var_type:
-                case VarTypeEnum._string:
+                case VarTypeEnum.string_:
                     value = var_value.strip()
                     self._check_string_variable_assignment(value=value, var_type=var_type)
 
-                case VarTypeEnum._int | VarTypeEnum._byte:
+                case VarTypeEnum.int_ | VarTypeEnum.byte_:
                     value = var_value.strip()
                     self._check_int_byte_variable_assignment(value=value,var_type=var_type)
 
-                case VarTypeEnum._float | VarTypeEnum._double:
+                case VarTypeEnum.float_ | VarTypeEnum.double_:
                     value = var_value.strip()
                     self._check_float_double_variable_assignment(value=value, var_type=var_type)
 
-                case VarTypeEnum._bool:
+                case VarTypeEnum.bool_:
                     value = var_value.strip()
                     self._check_bool_variable_assignment(value=value)
 
-                case VarTypeEnum._string_array:
+                case VarTypeEnum.string_array_:
                     value = var_value.strip()
                     self._check_string_array_variable_assignment(value=value)
 
-                case VarTypeEnum._int_array | VarTypeEnum._byte_array:
+                case VarTypeEnum.int_array_ | VarTypeEnum.byte_array_:
                     value = var_value.strip()
                     self._check_int_byte_array_variable_assignment(value=value, var_type=var_type)
 
-                case VarTypeEnum._float_array | VarTypeEnum._double_array:
+                case VarTypeEnum.float_array_ | VarTypeEnum.double_array_:
                     value = var_value.strip()
                     self._check_float_double_array_variable_assignment(value=value, var_type=var_type)
 
-                case VarTypeEnum._bool_array:
+                case VarTypeEnum.bool_array_:
                     value = var_value.strip()
                     self._check_bool_array_variable_assignment(value=value)
 
@@ -144,21 +146,28 @@ class DiagnositcRules:
 
 
     def _function_return_type(self, value: str, var_type: str) -> bool:
-        """Return True when value is a function expression (valid or invalid)."""
+        """Return True when Function returns correct type"""
         regex_func = re.compile(r"^(\w+)\s*\((.*)\)$")
         func_match = regex_func.match(value)
 
         if func_match:
             valid, return_types = self._scriptfunctionhandler.get_valid_return_function(func_match.group(1),var_type)
-
             if valid:
                 return True
 
             message = f"Invalid type. Function returns: {return_types}"
             self._add_diagnostic(message)
-
             return True
+        return False
 
+
+    def _attribute_return_type(self, var_type: str, value: str) -> bool:
+        """Return True when Attribute return correct type"""
+        valid_return: bool = self._scriptmethodhandler.get_class_attribute_return_type(self._document,
+                                                                  var_type,
+                                                                  value)
+        if valid_return:
+            return True
         return False
 
 
@@ -170,19 +179,20 @@ class DiagnositcRules:
 
         # Wrong value after =
         elif not re.match(r'^".*"$', value):
-            if self._function_return_type(value, var_type):
-                return
-
             if value.startswith('"') or value.endswith('"'):
                 if len(value) <= 1:
                     message = "Expected string value"
                     self._add_diagnostic(message)
 
-
             # Check If correct String Format
             striped_values: list[str] = [val.strip() for val in value.split("+")]
             if len(striped_values) >= 2:
                 for val in striped_values:
+                    if self._function_return_type(val, var_type):
+                        continue
+                    if self._attribute_return_type(var_type,val):
+                        continue
+
                     # Check if valid Var
                     if val in self._user_vars:
                         continue
@@ -204,10 +214,14 @@ class DiagnositcRules:
                         continue
 
                     message = f"String {val} value must be in quotes"
-
                     self._add_diagnostic(message)
             else:
                 # Check if valid Var
+                if self._function_return_type(value, var_type):
+                    return
+                if self._attribute_return_type(var_type,value):
+                    return
+
                 if value in self._user_vars:
                     return
                 
@@ -228,10 +242,9 @@ class DiagnositcRules:
                     return
 
                 message = f"String {value} value must be in quotes"
-
                 self._add_diagnostic(message)
 
-
+#ToDo: Add diagnostics for class attributes
     def _check_int_byte_variable_assignment(self, value: str, var_type: str) -> None:
         #Check for Valid int
         value_int: int
@@ -244,7 +257,7 @@ class DiagnositcRules:
                 self._add_diagnostic(message)
                 return
 
-            if var_type == VarTypeEnum._byte and value_int < 0:
+            if var_type == VarTypeEnum.byte_ and value_int < 0:
                 message = "Byte values can't have negative values"
 
                 self._add_diagnostic(message)
@@ -252,8 +265,7 @@ class DiagnositcRules:
 
         # More than 1 Value
         elif not re.match(r"^-?\d+$", value):
-
-            striped_values: list[str] = [val.strip() for val in re.split(r'\s*([+\*/-])\s+', value) 
+            striped_values: list[str] = [val.strip() for val in re.split(r'\s*([+*/-])\s+', value)
                                          if val.strip() and val.strip() not in "+-/*"]
             if len(striped_values) >= 2:
                 for val in striped_values:
@@ -272,7 +284,7 @@ class DiagnositcRules:
                         self._add_diagnostic(message)
                         continue
 
-                    if var_type == VarTypeEnum._byte and value_int < 0:
+                    if var_type == VarTypeEnum.byte_ and value_int < 0:
                         message = "Byte values can't have negative values"
 
                         self._add_diagnostic(message)
@@ -306,6 +318,7 @@ class DiagnositcRules:
         if re.match(r"^-?(\d+\.\d+|\.\d+)$", value):
             try:
                 value_float: float = float(value)
+                isinstance(value_float, float)
             except ValueError:
                 message = f"Value is not a {var_type}"
 
@@ -315,7 +328,7 @@ class DiagnositcRules:
         # More than 1 Value
         elif not re.match(r"^-?(\d+\.\d+|\.\d+)$", value):
 
-            striped_values: list[str] = [val.strip() for val in re.split(r'\s*([+\*/-])\s+', value) 
+            striped_values: list[str] = [val.strip() for val in re.split(r'\s*([+*/-])\s+', value)
                                          if val.strip() and val.strip() not in "+-/*"]
             if len(striped_values) >= 2:
                 for val in striped_values:
@@ -324,6 +337,7 @@ class DiagnositcRules:
 
                     try:
                         value_float: float = float(val)
+                        isinstance(value_float, float)
                         continue
                     except ValueError:
                         if val == "":
@@ -426,7 +440,7 @@ class DiagnositcRules:
                         self._add_diagnostic(message)
                         return
 
-                    if var_type == VarTypeEnum._byte and value_int < 0:
+                    if var_type == VarTypeEnum.byte_ and value_int < 0:
                         message = "Byte values can't have negative values"
 
                         self._add_diagnostic(message)

@@ -4,6 +4,8 @@ from lsprotocol import types
 import sys
 import re
 
+from lsprotocol.types import InsertTextFormat
+
 
 class ScriptMethodHandler:
     def __init__(self) -> None:
@@ -43,6 +45,10 @@ class ScriptMethodHandler:
 
     def get_script_classes(self) -> dict:
         return self._scriptclasses
+
+
+    def get_script_parametritzed_objects(self) -> dict:
+        return self._parametrized_objects
     
 
     def get_scriptclass_completions(self) -> list[types.CompletionItem]:
@@ -82,10 +88,11 @@ class ScriptMethodHandler:
                         kind=types.MarkupKind.Markdown,
                         value=description,
                     ),
+                    insert_text=f"{object_name}[$1]" if object_name != "Env" else object_name,
+                    insert_text_format=InsertTextFormat.Snippet,
                     sort_text=f"parameterized_object_{object_name.lower()}",
                 )
             )
-
         return items
 
 
@@ -93,14 +100,12 @@ class ScriptMethodHandler:
         classes_regex = "|".join(map(re.escape, self._scriptclasses))
 
         definition_match = re.compile(rf"^\s*({classes_regex})\s+(\w+)(?:\s*=\s*(.*))?$")
-        #assignment_match = re.compile(r"^\s*(\w+)\s*=\s*(.*)$")
 
         user_classes: dict[str,dict[str,str]] = {}
 
         for line in document.lines:
             line = line.lstrip("\ufeff").rstrip("\r\n")
             definition_regex_match = definition_match.match(line)
-            #assignment_regex_match = assignment_match.match(line)
 
             if definition_regex_match:
                 class_type = definition_regex_match.group(1)
@@ -111,3 +116,30 @@ class ScriptMethodHandler:
                                             "class_value": class_value if class_value is not None else "None"}
                 continue
         return user_classes
+
+
+    def get_class_attribute_return_type(self, document, class_type: str, value: str) -> bool:
+        user_classes: dict[str,dict[str,str]] = self.collect_classes(document)
+        regex_match = re.search(r"(\w+)\.(\w+)", value)
+
+        if regex_match:
+            var_name = regex_match.group(1)
+            var_attribute = regex_match.group(2)
+        else:
+            return False
+
+        for class_name, class_data in user_classes.items():
+            if class_name == var_name:
+                var_type = class_data.get("class_type", "")
+
+                class_data: dict = self._scriptclasses.get(var_type, {})
+                for attribute_name, attribute_data in class_data.get("attributes", {}).items():
+                    if var_attribute == attribute_name:
+                        if class_type == attribute_data.get("return", ""):
+                            return True
+                        break
+                break
+        return False
+
+    def get_object_attribute_return_type(self):
+        raise NotImplementedError

@@ -995,121 +995,413 @@
       "description": "Access point data in the project. Syntax: Point[\"name\"].attribute",
       "indexType": "string",
       "attributes": {
-        "Value": { "type": "float[]", "mode": "R/W", "description": "The coordinate of the point {X, Y, Z, RX, RY, RZ}, Size = 6" },
-        "Joint": { "type": "float[]", "mode": "R/W", "description": "The joint angle {J1, J2, J3, J4, J5, J6}, Size = 6" },
-        "Pose": { "type": "int[]", "mode": "R/W", "description": "The pose of the robot {Config1, Config2, Config3}, Size = 3" },
-        "Flange": { "type": "float[]", "mode": "R", "description": "The coordinate of the flange's center {X, Y, Z, RX, RY, RZ}, Size = 6" },
-        "BaseName": { "type": "string", "mode": "R", "description": "The name of the base" },
-        "TCPName": { "type": "string", "mode": "R", "description": "The name of the TCP" },
-        "TeachValue": { "type": "float[]", "mode": "R", "description": "The original coordinate of the teaching point {X, Y, Z, RX, RY, RZ}, Size = 6" },
-        "TeachJoint": { "type": "float[]", "mode": "R", "description": "The joint angle at the teach point {J1, J2, J3, J4, J5, J6}, Size = 6" },
-        "TeachPose": { "type": "int[]", "mode": "R", "description": "The original pose of the robot on the teaching point {Config1, Config2, Config3}, Size = 3" }
+        "Value": {
+            "description": "The coordinate of the point {X, Y, Z, RX, RY, RZ}, Size = 6",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "Joint": {
+            "description": "The joint angle {J1, J2, J3, J4, J5, J6}, Size = 6",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "Pose": {
+            "description": "The pose of the robot {Config1, Config2, Config3}, Size = 3",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "Flange": {
+            "description": "The coordinate of the flange's center {X, Y, Z, RX, RY, RZ}, Size = 6",
+            "mode": "R",
+            "return": "float[]"
+        },
+        "BaseName": {
+            "description": "The name of the base",
+            "mode": "R",
+            "return": "string"
+        },
+        "TCPName": {
+            "description": "The name of the TCP",
+            "mode": "R",
+            "return": "string"
+        },
+        "TeachValue": {
+            "description": "The original coordinate of the teaching point {X, Y, Z, RX, RY, RZ}, Size = 6",
+            "mode": "R",
+            "return": "float[]"
+        },
+        "TeachJoint": {
+            "description": "The joint angle at the teach point {J1, J2, J3, J4, J5, J6}, Size = 6",
+            "mode": "R",
+            "return": "float[]"
+        },
+        "TeachPose": {
+            "description": "The original pose of the robot on the teaching point {Config1, Config2, Config3}, Size = 3",
+            "mode": "R",
+            "return": "int[]"
+        }
       }
     },
     "Base": {
       "description": "Access base coordinate data. Syntax: Base[\"name\"].attribute or Base[\"name\", int].attribute",
       "indexType": "string or string,int",
       "attributes": {
-        "Value": { "type": "float[]", "mode": "R/W", "description": "The base value {X, Y, Z, RX, RY, RZ}, Size = 6" },
-        "Type": { "type": "string", "mode": "R", "description": "The type of the base: 'R'=Robot Base, 'V'=Vision Base, 'C'=Custom Base" },
-        "TeachValue": { "type": "float[]", "mode": "R", "description": "The original teach base value {X, Y, Z, RX, RY, RZ}, Size = 6" }
+        "Value": {
+            "description": "The base value {X, Y, Z, RX, RY, RZ}, Size = 6",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "Type": {
+            "description": "Type of the Base",
+            "mode": "R",
+            "return": "string"
+        },
+        "TeachValue": {
+            "description": "The original teach base value {X, Y, Z, RX, RY, RZ}, Size = 6",
+            "mode": "R",
+            "return": "float[]"
+        }
       }
     },
     "TCP": {
       "description": "Access TCP (Tool Center Point) data. Syntax: TCP[\"name\"].attribute",
       "indexType": "string",
       "attributes": {
-        "Value": { "type": "float[]", "mode": "R/W", "description": "The value of the TCP {X, Y, Z, RX, RY, RZ}, Size = 6" },
-        "Mass": { "type": "float", "mode": "R/W", "description": "The value of mass in kg" },
-        "MOI": { "type": "float[]", "mode": "R/W", "description": "The value of the Principal Moments of Inertia {Ixx, Iyy, Izz}, Size = 3" },
-        "MCF": { "type": "float[]", "mode": "R/W", "description": "The value of Mass center frame with principle axes w.r.t tool frame {X, Y, Z, RX, RY, RZ}, Size = 6" },
-        "TeachValue": { "type": "float[]", "mode": "R", "description": "The original value of the TCP {X, Y, Z, RX, RY, RZ}, Size = 6" },
-        "TeachMass": { "type": "float", "mode": "R", "description": "The original value of mass in kg" },
-        "TeachMOI": { "type": "float[]", "mode": "R", "description": "The original value of the Principal Moments of Inertia {Ixx, Iyy, Izz}, Size = 3" },
-        "TeachMCF": { "type": "float[]", "mode": "R", "description": "The original value of Mass center frame {X, Y, Z, RX, RY, RZ}, Size = 6" }
+        "Value": {
+            "description": "The value of the TCP {X, Y, Z, RX, RY, RZ}, Size = 6",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "Mass": {
+            "description": "The value of mass in kg",
+            "mode": "R/W",
+            "return": "float"
+        },
+        "MOI": {
+            "description": "The value of the Principal Moments of Inertia {Ixx, Iyy, Izz}, Size = 3",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "MCF": {
+            "description": "The value of Mass center frame with principle axes w.r.t tool frame {X, Y, Z, RX, RY, RZ}, Size = 6",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "TeachValue": {
+            "description": "The original value of the TCP {X, Y, Z, RX, RY, RZ}, Size = 6",
+            "mode": "R",
+            "return": "float[]"
+        },
+        "TeachMass": {
+            "description": "The original value of mass in kg",
+            "mode": "R",
+            "return": "float"
+        },
+        "TeachMOI": {
+            "description": "The original value of the Principal Moments of Inertia {Ixx, Iyy, Izz}, Size = 3",
+            "mode": "R",
+            "return": "float[]"
+        },
+        "TeachMCF": {
+            "description": "The original value of Mass center frame {X, Y, Z, RX, RY, RZ}, Size = 6",
+            "mode": "R",
+            "return": "float[]"
+        }
       }
     },
     "VPoint": {
       "description": "Access vision point data. Syntax: VPoint[\"jobName\"].attribute",
       "indexType": "string",
       "attributes": {
-        "Value": { "type": "float[]", "mode": "R/W", "description": "The initial coordinate of VPoint {X, Y, Z, RX, RY, RZ}, Size = 6" },
-        "BaseName": { "type": "string", "mode": "R", "description": "The name of the VPoint base" },
-        "TeachValue": { "type": "float[]", "mode": "R", "description": "The original job initial coordinate of VPoint {X, Y, Z, RX, RY, RZ}, Size = 6" }
+        "Value": {
+            "description": "The initial coordinate of VPoint {X, Y, Z, RX, RY, RZ}, Size = 6",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "BaseName": {
+            "description": "The name of the VPoint base",
+            "mode": "R",
+            "return": "string"
+        },
+        "TeachValue": {
+            "description": "The original job initial coordinate of VPoint {X, Y, Z, RX, RY, RZ}, Size = 6",
+            "mode": "R",
+            "return": "float[]"
+        }
       }
     },
     "IO": {
       "description": "Access digital and analog I/O. Syntax: IO[\"moduleName\"].attribute. Modules: ControlBox, EndModule, ExtModule0..N, Safety",
       "indexType": "string",
       "attributes": {
-        "DI": { "type": "byte[]", "mode": "R", "description": "Digital input array. 0=Low, 1=High" },
-        "DO": { "type": "byte[]", "mode": "R/W", "description": "Digital output array. 0=Low, 1=High" },
-        "AI": { "type": "float[]", "mode": "R", "description": "Analog input array. -10.24V to +10.24V" },
-        "AO": { "type": "float[]", "mode": "R/W", "description": "Analog output array. -10.00V to +10.00V" },
-        "InstantDI": { "type": "byte[]", "mode": "R", "description": "Digital input (Instant Command). 0=Low, 1=High" },
-        "InstantDO": { "type": "byte[]", "mode": "R/W", "description": "Digital output (Instant Command). 0=Low, 1=High" },
-        "InstantAI": { "type": "float[]", "mode": "R", "description": "Analog input (Instant Command). -10.24V to +10.24V" },
-        "InstantAO": { "type": "float[]", "mode": "R/W", "description": "Analog output (Instant Command). -10.00V to +10.00V" },
-        "SI": { "type": "byte[]", "mode": "R", "description": "Safety function input (Safety module only). 0=Low, 1=High" },
-        "SO": { "type": "byte[]", "mode": "R", "description": "Safety function output (Safety module only). 0=Low, 1=High" }
+        "DI": {
+            "description": "Digital input array. 0=Low, 1=High",
+            "mode": "R",
+            "return": "byte[]"
+        },
+        "DO": {
+            "description": "Digital output array. 0=Low, 1=High",
+            "mode": "R/W",
+            "return": "byte[]"
+        },
+        "AI": {
+            "description": "Analog input array. -10.24V to +10.24V",
+            "mode": "R",
+            "return": "float[]"
+        },
+        "AO": {
+            "description": "Analog output array. -10.00V to +10.00V",
+            "mode": "R/W",
+            "return": "float[]"
+        },
+        "InstantDI": {
+            "description": "Digital input (Instant Command). 0=Low, 1=High",
+            "mode": "R",
+            "return": "byte[]"
+        },
+        "InstantDO": {
+            "description": "Digital output (Instant Command). 0=Low, 1=High",
+            "mode": "R/W",
+            "return": "byte[]"
+        },
+        "InstantAI": {
+            "description": "Analog input (Instant Command). -10.24V to +10.24V",
+            "mode": "R",
+            "return": "float[]"
+        },
+        "InstantAO": {
+            "description": "Analog output (Instant Command). -10.00V to +10.00V",
+            "mode": "R",
+            "return": "float[]"
+        },
+        "SI": {
+            "description": "Safety function input (Safety module only). 0=Low, 1=High",
+            "mode": "R",
+            "return": "byte[]"
+        },
+        "SO": {
+            "description": "Safety function output (Safety module only). 0=Low, 1=High",
+            "mode": "R",
+            "return": "byte[]"
+        }        
       }
     },
     "Robot": {
       "description": "Access robot status and configuration. Syntax: Robot[0].attribute (index fixed at 0)",
       "indexType": "int",
       "attributes": {
-        "CoordRobot": { "type": "float[]", "mode": "R", "description": "TCP coordinate relative to RobotBase {X, Y, Z, RX, RY, RZ}, Size = 6" },
-        "CoordBase": { "type": "float[]", "mode": "R", "description": "TCP coordinate relative to current base {X, Y, Z, RX, RY, RZ}, Size = 6" },
-        "Joint": { "type": "float[]", "mode": "R", "description": "Current robot joint angles {J1, J2, J3, J4, J5, J6}, Size = 6" },
-        "BaseName": { "type": "string", "mode": "R", "description": "The name of the current base" },
-        "TCPName": { "type": "string", "mode": "R", "description": "The name of the current TCP" },
-        "Payload": { "type": "float", "mode": "R", "description": "The current compensatory payload in kg" },
-        "CameraLight": { "type": "byte", "mode": "R/W", "description": "The lighting of the robot's camera. 0=Off, 1=On" },
-        "InstantCameraLight": { "type": "byte", "mode": "R/W", "description": "The lighting of the robot's camera (Instant Command). 0=Off, 1=On" },
-        "TCPForce3D": { "type": "float", "mode": "R", "description": "Current TCP force as composite of x, y, z in N" },
-        "TCPSpeed3D": { "type": "float", "mode": "R", "description": "Current TCP speed as composite of x, y, z in mm/s" }
+        "CoordRobot": {
+          "description": "TCP coordinate relative to RobotBase {X, Y, Z, RX, RY, RZ}, Size = 6",
+          "mode": "R",
+          "return": "float[]"
+        },
+        "CoordBase": {
+          "description": "TCP coordinate relative to current base {X, Y, Z, RX, RY, RZ}, Size = 6",
+          "mode": "R",
+          "return": "float[]"
+        },
+        "Joint": {
+          "description": "Current robot joint angles {J1, J2, J3, J4, J5, J6}, Size = 6",
+          "mode": "R",
+          "return": "float[]"
+        },
+        "BaseName": {
+          "description": "The name of the current base",
+          "mode": "R",
+          "return": "string"
+        },
+        "TCPName": {
+          "description": "The name of the current TCP",
+          "mode": "R",
+          "return": "string"
+        },
+        "Payload": {
+          "description": "The current compensatory payload in kg",
+          "mode": "R",
+          "return": "float"
+        },
+        "CameraLight": {
+          "description": "The lighting of the robot's camera. 0=Off, 1=On",
+          "mode": "R/W",
+          "return": "byte"
+        },
+        "InstantCameraLight": {
+          "description": "The lighting of the robot's camera (Instant Command). 0=Off, 1=On",
+          "mode": "R/W",
+          "return": "byte"
+        },
+        "TCPForce3D": {
+          "description": "Current TCP force as composite of x, y, z in N",
+          "mode": "R",
+          "return": "float"
+        },
+        "TCPSpeed3D": {
+          "description": "Current TCP speed as composite of x, y, z in mm/s",
+          "mode": "R",
+          "return": "float"
+        }
       }
     },
     "FT": {
       "description": "Access force/torque sensor data. Syntax: FT[\"sensorName\"].attribute",
       "indexType": "string",
       "attributes": {
-        "X": { "type": "float", "mode": "R", "description": "The force value of the X axis" },
-        "Y": { "type": "float", "mode": "R", "description": "The force value of the Y axis" },
-        "Z": { "type": "float", "mode": "R", "description": "The force value of the Z axis" },
-        "TX": { "type": "float", "mode": "R", "description": "The torque value of the X axis" },
-        "TY": { "type": "float", "mode": "R", "description": "The torque value of the Y axis" },
-        "TZ": { "type": "float", "mode": "R", "description": "The torque value of the Z axis" },
-        "F3D": { "type": "float", "mode": "R", "description": "The XYZ resultant force value" },
-        "T3D": { "type": "float", "mode": "R", "description": "The XYZ resultant torque value" },
-        "Value": { "type": "float[]", "mode": "R", "description": "The XYZ force and torque array {X, Y, Z, TX, TY, TZ}, Size = 6" },
-        "ForceValue": { "type": "float[]", "mode": "R", "description": "The XYZ force value array {X, Y, Z}, Size = 3" },
-        "TorqueValue": { "type": "float[]", "mode": "R", "description": "The XYZ torque value array {TX, TY, TZ}, Size = 3" },
-        "RefCoordX": { "type": "float", "mode": "R", "description": "X-axis force based on reference base (Force Control only)" },
-        "RefCoordY": { "type": "float", "mode": "R", "description": "Y-axis force based on reference base (Force Control only)" },
-        "RefCoordZ": { "type": "float", "mode": "R", "description": "Z-axis force based on reference base (Force Control only)" },
-        "RefCoordTX": { "type": "float", "mode": "R", "description": "X-axis torque based on reference base (Force Control only)" },
-        "RefCoordTY": { "type": "float", "mode": "R", "description": "Y-axis torque based on reference base (Force Control only)" },
-        "RefCoordTZ": { "type": "float", "mode": "R", "description": "Z-axis torque based on reference base (Force Control only)" },
-        "RefCoordF3D": { "type": "float", "mode": "R", "description": "XYZ resultant force based on reference base (Force Control only)" },
-        "RefCoordT3D": { "type": "float", "mode": "R", "description": "XYZ resultant torque based on reference base (Force Control only)" },
-        "RefCoordForceValue": { "type": "float[]", "mode": "R", "description": "XYZ force array based on reference base {X, Y, Z}, Size = 3" },
-        "RefCoordTorqueValue": { "type": "float[]", "mode": "R", "description": "XYZ torque array based on reference base {TX, TY, TZ}, Size = 3" },
-        "Model": { "type": "string", "mode": "R", "description": "The model name of the F/T sensor" },
-        "Zero": { "type": "byte", "mode": "R/W", "description": "Turn on or off F/T sensor offset. 0=Zero OFF, 1=Zero ON" }
+        "X": {
+          "description": "The force value of the X axis",
+          "mode": "R",
+          "return": "float"
+        },
+        "Y": {
+          "description": "The force value of the Y axis",
+          "mode": "R",
+          "return": "float"
+        },
+        "Z": {
+          "description": "The force value of the Z axis",
+          "mode": "R",
+          "return": "float"
+        },
+        "TX": {
+          "description": "The torque value of the X axis",
+          "mode": "R",
+          "return": "float"
+        },
+        "TY": {
+          "description": "The torque value of the Y axis",
+          "mode": "R",
+          "return": "float"
+        },
+        "TZ": {
+          "description": "The torque value of the Z axis",
+          "mode": "R",
+          "return": "float"
+        },
+        "F3D": {
+          "description": "The XYZ resultant force value",
+          "mode": "R",
+          "return": "float"
+        },
+        "T3D": {
+          "description": "The XYZ resultant torque value",
+          "mode": "R",
+          "return": "float"
+        },
+        "Value": {
+          "description": "The XYZ force and torque array {X, Y, Z, TX, TY, TZ}, Size = 6",
+          "mode": "R",
+          "return": "float[]"
+        },
+        "ForceValue": {
+          "description": "The XYZ force value array {X, Y, Z}, Size = 3",
+          "mode": "R",
+          "return": "float[]"
+        },
+        "TorqueValue": {
+          "description": "The XYZ torque value array {TX, TY, TZ}, Size = 3",
+          "mode": "R",
+          "return": "float[]"
+        },
+        "RefCoordX": {
+          "description": "X-axis force based on reference base (Force Control only)",
+          "mode": "R",
+          "return": "float"
+        },
+        "RefCoordY": {
+          "description": "Y-axis force based on reference base (Force Control only)",
+          "mode": "R",
+          "return": "float"
+        },
+        "RefCoordZ": {
+          "description": "Z-axis force based on reference base (Force Control only)",
+          "mode": "R",
+          "return": "float"
+        },
+        "RefCoordTX": {
+          "description": "X-axis torque based on reference base (Force Control only)",
+          "mode": "R",
+          "return": "float"
+        },
+        "RefCoordTY": {
+          "description": "Y-axis torque based on reference base (Force Control only)",
+          "mode": "R",
+          "return": "float"
+        },
+        "RefCoordTZ": {
+          "description": "Z-axis torque based on reference base (Force Control only)",
+          "mode": "R",
+          "return": "float"
+        },
+        "RefCoordF3D": {
+          "description": "XYZ resultant force based on reference base (Force Control only)",
+          "mode": "R",
+          "return": "float"
+        },
+        "RefCoordT3D": {
+          "description": "XYZ resultant torque based on reference base (Force Control only)",
+          "mode": "R",
+          "return": "float"
+        },
+        "RefCoordForceValue": {
+          "description": "XYZ force array based on reference base {X, Y, Z}, Size = 3",
+          "mode": "R",
+          "return": "float[]"
+        },
+        "RefCoordTorqueValue": {
+          "description": "XYZ torque array based on reference base {TX, TY, TZ}, Size = 3",
+          "mode": "R",
+          "return": "float[]"
+        },
+        "Model": {
+          "description": "The model name of the F/T sensor",
+          "mode": "R",
+          "return": "string"
+        },
+        "Zero": {
+          "description": "Turn on or off F/T sensor offset. 0=Zero OFF, 1=Zero ON",
+          "mode": "R/W",
+          "return": "byte"
+        }
       }
     },
     "Env": {
       "description": "Access current application environment status. Syntax: Env.attribute (no index required)",
       "indexType": "none",
       "attributes": {
-        "AppVersion": { "type": "string", "mode": "R", "description": "Application Version (e.g., '2.24.1000')" },
-        "AppType": { "type": "int", "mode": "R", "description": "Application Type: 1=Real Robot, 2=Virtual Robot, 3=TM AI+ AOI Edge" },
-        "RobotModel": { "type": "string", "mode": "R", "description": "Robot Model (e.g., 'TM12S', 'TM5-900')" },
-        "CurrentProject": { "type": "string", "mode": "R", "description": "Current Project Name" },
-        "RunningProject": { "type": "string", "mode": "R", "description": "Current Running Project Name" },
-        "RunningSpeed": { "type": "float", "mode": "R", "description": "Current Running Speed in percentage (%)" },
-        "OperationMode": { "type": "int", "mode": "R", "description": "Operation Mode: 0=Manual, 1=Auto" }
+        "AppVersion": {
+          "description": "Application Version (e.g., '2.24.1000')",
+          "mode": "R",
+          "type": "string"
+        },
+        "AppType": {
+          "description": "Application Type: 1=Real Robot, 2=Virtual Robot, 3=TM AI+ AOI Edge",
+          "mode": "R",
+          "type": "int"
+        },
+        "RobotModel": {
+          "description": "Robot Model (e.g., 'TM12S', 'TM5-900')",
+          "mode": "R",
+          "type": "string"
+        },
+        "CurrentProject": {
+          "description": "Current Project Name",
+          "mode": "R",
+          "type": "string"
+        },
+        "RunningProject": {
+          "description": "Current Running Project Name",
+          "mode": "R",
+          "type": "string"
+        },
+        "RunningSpeed": {
+          "description": "Current Running Speed in percentage (%)",
+          "mode": "R",
+          "type": "float"
+        },
+        "OperationMode": {
+          "description": "Operation Mode: 0=Manual, 1=Auto",
+          "mode": "R",
+          "type": "int"
+        }
       }
     }
   }

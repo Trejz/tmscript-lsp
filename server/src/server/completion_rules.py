@@ -47,12 +47,10 @@ class CompletionRules:
             user_vars = self._userdefinedvaraibles.get_user_defined_variables(document=document,
                                                                               defined_var=regex_match.group(2),
                                                                               declared_type=declared_type) 
-
-            if declared_type == VarTypeEnum._bool:
+            if declared_type == VarTypeEnum.bool_:
                 pass
 
-            items += user_vars if user_vars is not None else [] 
-
+            items += user_vars if user_vars is not None else []
             if items == []:
                 return None
 
@@ -95,7 +93,6 @@ class CompletionRules:
                             sort_text=f"method_{method_name}"
                             ) 
                         ])
-
         if not items:
             return None
 
@@ -108,36 +105,39 @@ class CompletionRules:
     def rule_scriptclass_attributes_completions(self, before_cursor, document) -> types.CompletionList | None:
         script_classes = self._scriptmehtodhandler.get_script_classes()
         items = []
-        regex_match = re.search(r'(\w+)\.', before_cursor)
+        regex_matches = re.finditer(r'(\w+)\.(\w+)?', before_cursor)
 
-        if not regex_match:
+        if not regex_matches:
             return None
-
-        current_var = regex_match.group(1)
-        user_vars = self._scriptmehtodhandler.collect_classes(document)
-
-        if current_var in user_vars:
-            var_class = user_vars[current_var].get("class_type")
-        else:
-            return None
-
-        for class_name, class_values in script_classes.items():
-            if not class_name == var_class:
+        for match in regex_matches:
+            current_var = match.group(1)
+            completed_attribute = match.group(2)
+            if completed_attribute is not None:
                 continue
 
-            for attribute_name, attribute_val in class_values.get("attributes", {}).items():
-                items.extend([types.CompletionItem(
-                            label=attribute_name,
-                            kind=types.CompletionItemKind.Value,
-                            detail=f"{class_name} Class Attribute",
-                            documentation=types.MarkupContent(
-                                kind=types.MarkupKind.Markdown,
-                                value=attribute_val.get("description", "")
-                                ),
-                            sort_text=f"attribute_{attribute_name}"
-                            ) 
-                        ])
+            user_vars = self._scriptmehtodhandler.collect_classes(document)
 
+            if current_var in user_vars:
+                var_class = user_vars[current_var].get("class_type")
+            else:
+                return None
+
+            for class_name, class_values in script_classes.items():
+                if not class_name == var_class:
+                    continue
+
+                for attribute_name, attribute_val in class_values.get("attributes", {}).items():
+                    items.extend([types.CompletionItem(
+                                label=attribute_name,
+                                kind=types.CompletionItemKind.Value,
+                                detail=f"{class_name} Class Attribute",
+                                documentation=types.MarkupContent(
+                                    kind=types.MarkupKind.Markdown,
+                                    value=attribute_val.get("description", "")
+                                    ),
+                                sort_text=f"attribute_{attribute_name}"
+                                )
+                            ])
         if not items:
             return None
 
@@ -146,4 +146,43 @@ class CompletionRules:
                 items = items
                 )
 
+    #ToDo: Adjust so it#s teh same as script calss attributes
+    def rule_parametrizedobject_attributes(self, before_cursor, document) -> types.CompletionList | None:
+        parametrized_obejcts = self._scriptmehtodhandler.get_script_parametritzed_objects()
+        objects_regex = "|".join(map(re.escape, parametrized_obejcts))
 
+        items = []
+        regex_match = re.search(rf'({objects_regex})(\[[^]]*])?\.' , before_cursor)
+        if not regex_match:
+            return None
+
+        current_var = regex_match.group(1)
+        brackets = regex_match.group(2)
+        if current_var != "Env" and brackets is None:
+            return None
+        if current_var == "Env" and brackets is not None:
+            return None
+
+        for class_name, class_values in parametrized_obejcts.items():
+            if not class_name == current_var:
+                continue
+
+            for attribute_name, attribute_val in class_values.get("attributes", {}).items():
+                items.extend([types.CompletionItem(
+                            label=attribute_name,
+                            kind=types.CompletionItemKind.Value,
+                            detail=f"{class_name} Attribute",
+                            documentation=types.MarkupContent(
+                                kind=types.MarkupKind.Markdown,
+                                value=attribute_val.get("description", "")
+                                ),
+                            sort_text=f"attribute_{attribute_name}"
+                            )
+                        ])
+        if not items:
+            return None
+
+        return types.CompletionList(
+                is_incomplete=False,
+                items = items
+                )

@@ -2,16 +2,16 @@ from enum import StrEnum
 
 
 class VarTypeEnum(StrEnum):
-    _string = "string"
-    _int = "int"
-    _double = "double"
-    _float = "float"
-    _bool = "bool"
-    _byte = "byte"
+    string_ = "string"
+    int_ = "int"
+    double_ = "double"
+    float_ = "float"
+    bool_ = "bool"
+    byte_ = "byte"
 
-    _string_array = "string[]"
-    _int_array = "int[]"
-    _double_array = "double[]"
-    _float_array = "float[]"
-    _bool_array = "bool[]"
-    _byte_array = "byte[]"
+    string_array_ = "string[]"
+    int_array_ = "int[]"
+    double_array_ = "double[]"
+    float_array_ = "float[]"
+    bool_array_ = "bool[]"
+    byte_array_ = "byte[]"
